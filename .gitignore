@@ -1,0 +1,25 @@
+
+# Temp files
+*~
+
+# Makefile
+Makefile*
+.qmake.stash
+
+# Compiled object files
+*.o
+*.obj
+
+# Debug and Release dirs
+debug/
+release/
+
+# Qt Creator
+# Project options files
+*.pro.user*
+
+# MOC, resource and UI files
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+
