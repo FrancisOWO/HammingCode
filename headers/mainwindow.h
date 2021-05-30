@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QScrollArea>
 #include "hdist.h"
 #include "herr.h"
 #include "hcodegen.h"
@@ -26,8 +27,9 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    SubWindow *pSubWin[SUBWIN_MAX];
-    int tabno[SUBWIN_MAX];
+    QScrollArea tabScrArea[SUBWIN_MAX]; //标签页滚动条
+    SubWindow *pSubWin[SUBWIN_MAX];     //子窗体
+    int tabno[SUBWIN_MAX];              //子窗体对应的标签页编号
 
     void InitMembers();         //初始化数据成员
     void InitConnections();     //关联信号与槽
@@ -36,11 +38,9 @@ public slots:
     void closeTab(int index);   //关闭标签页
 
 private slots:
-    void MsgAboutApp();
+    void MsgAboutApp();         //关于应用
 
-    void openWinHDist();
-    void openWinHErr();
-    void openWinHCodeGen();
+    void openSubWin(int index); //打开子窗体
 
 };
 #endif // MAINWINDOW_H

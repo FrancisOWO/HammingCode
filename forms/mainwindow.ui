@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>859</width>
-    <height>491</height>
+    <width>780</width>
+    <height>460</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>780</width>
+    <height>460</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>16777215</height>
+   </size>
   </property>
   <property name="font">
    <font>
@@ -35,6 +47,12 @@
     </item>
     <item row="0" column="2" rowspan="4">
      <widget class="QTabWidget" name="tabWidget">
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>350</height>
+       </size>
+      </property>
       <property name="font">
        <font>
         <pointsize>10</pointsize>
@@ -99,7 +117,7 @@
           </font>
          </property>
          <property name="text">
-          <string>【海明码】图形化演示</string>
+          <string>【海明码】 图形化演示</string>
          </property>
         </widget>
        </item>
@@ -243,7 +261,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>859</width>
+     <width>780</width>
      <height>25</height>
     </rect>
    </property>

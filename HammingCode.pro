@@ -27,6 +27,7 @@ HEADERS += \
     headers/subwindow.h
 
 SOURCES += \
+    sources/HammingBack.cpp \
     sources/hcodegen.cpp \
     sources/hdist.cpp \
     sources/herr.cpp \
