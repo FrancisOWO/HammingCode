@@ -19,6 +19,7 @@ INCLUDEPATH += \
     headers/
 
 HEADERS += \
+    headers/HammingBack.h \
     headers/hcodegen.h \
     headers/hdist.h \
 	headers/herr.h \
@@ -27,6 +28,7 @@ HEADERS += \
     headers/subwindow.h
 
 SOURCES += \
+    sources/HammingBack.cpp \
     sources/hcodegen.cpp \
     sources/hdist.cpp \
     sources/herr.cpp \
