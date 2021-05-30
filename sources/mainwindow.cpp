@@ -1,7 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QList>
+#include <QString>
 #include <QMessageBox>
+#include <QScrollBar>
+#include <QPushButton>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -29,8 +33,13 @@ MainWindow::~MainWindow()
 void MainWindow::InitMembers()
 {
     for(int i = 0; i < SUBWIN_MAX; i++){
-        pSubWin[i] = nullptr;
-        tabno[i] = -1;
+        tabScrArea[i].setStyleSheet("background:white");    //背景白色
+        QString barColor = "background:#E8E8E8";            //滚动条浅灰色
+        tabScrArea[i].verticalScrollBar()->setStyleSheet(barColor);
+        tabScrArea[i].horizontalScrollBar()->setStyleSheet(barColor);
+        tabScrArea[i].setFrameShape(QFrame::NoFrame);       //无边框
+        pSubWin[i] = nullptr;   //暂无子窗体
+        tabno[i] = -1;      //标签页编号置非法值
     }
     ui->tabWidget->clear();     //清空标签页
     ui->tabWidget->setTabsClosable(true);   //标签页可关闭
@@ -43,9 +52,9 @@ void MainWindow::InitConnections()
     //菜单栏
     connect(ui->actAboutApp, SIGNAL(triggered()), this, SLOT(MsgAboutApp()));   //关于应用
     //打开子窗体
-    connect(ui->pbtnHDist, SIGNAL(clicked()), this, SLOT(openWinHDist()));
-    connect(ui->pbtnHErr, SIGNAL(clicked()), this, SLOT(openWinHErr()));
-    connect(ui->pbtnHCodeGen, SIGNAL(clicked()), this, SLOT(openWinHCodeGen()));
+    connect(ui->pbtnHDist, &QPushButton::clicked, [=](){openSubWin(SUBWIN_HDIST);});
+    connect(ui->pbtnHErr, &QPushButton::clicked, [=](){openSubWin(SUBWIN_HERR);});
+    connect(ui->pbtnHCodeGen, &QPushButton::clicked, [=](){openSubWin(SUBWIN_HCGEN);});
     //关闭标签页
     connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
 }
@@ -86,41 +95,45 @@ void MainWindow::closeTab(int index)
     }
 }
 
-//打开"海明距离"子窗体
-void MainWindow::openWinHDist()
+//打开子窗体
+void MainWindow::openSubWin(int index)
 {
-    if(nullptr != pSubWin[SUBWIN_HDIST])
+    //判断index是否合法，判断子窗体是否存在
+    if(index < 0 || index > SUBWIN_MAX || nullptr != pSubWin[index])
         return;
     //新建子窗体，添加标签页
-    pSubWin[SUBWIN_HDIST] = new HDist;
-    tabno[SUBWIN_HDIST] = ui->tabWidget->addTab(pSubWin[SUBWIN_HDIST], QString::fromLocal8Bit("海明距离"));
-    ui->tabWidget->setCurrentIndex(tabno[SUBWIN_HDIST]);    //设置活动标签页
-    pSubWin[SUBWIN_HDIST]->show();
-    ui->pbtnHDist->setEnabled(false);   //禁用按钮
-}
+    QString tabTitle;
+    if(index == SUBWIN_HDIST){       //海明距离
+        pSubWin[index] = new HDist;
+        tabTitle = QString::fromLocal8Bit("海明距离");
+    }
+    else if(index == SUBWIN_HERR){   //检错与纠错
+        pSubWin[index] = new HErr;
+        tabTitle = QString::fromLocal8Bit("检错与纠错");
+    }
+    else if(index == SUBWIN_HCGEN){  //海明码生成
+        pSubWin[index] = new HCodeGen;
+        tabTitle = QString::fromLocal8Bit("海明码生成");
+    }
+    else
+        return;
+    //子窗体绑定到滚动条区域
+    tabScrArea[index].setWidget(pSubWin[index]);
+    //重设按钮样式（之前的样式被ScrollArea的样式覆盖）
+    QList<QPushButton *> pbtns = pSubWin[index]->findChildren<QPushButton *>();
+    foreach (QPushButton *pbtn, pbtns){
+        pbtn->setStyleSheet("background:#F0F0F0");
+    }
+    //滚动条区域绑定到标签页
+    tabno[index] = ui->tabWidget->addTab(&(tabScrArea[index]), tabTitle);
+    ui->tabWidget->setCurrentIndex(tabno[index]);    //设置活动标签页
+    pSubWin[index]->show();
+    //禁用按钮
+    if(index == SUBWIN_HDIST)       //海明距离
+        ui->pbtnHDist->setEnabled(false);
+    else if(index == SUBWIN_HERR)   //检错与纠错
+        ui->pbtnHErr->setEnabled(false);
+    else if(index == SUBWIN_HCGEN)  //海明码生成
+        ui->pbtnHCodeGen->setEnabled(false);
 
-//打开"检错与纠错"子窗体
-void MainWindow::openWinHErr()
-{
-    if(nullptr != pSubWin[SUBWIN_HERR])
-        return;
-    //新建子窗体，添加标签页
-    pSubWin[SUBWIN_HERR] = new HErr;
-    tabno[SUBWIN_HERR] = ui->tabWidget->addTab(pSubWin[SUBWIN_HERR], QString::fromLocal8Bit("检错与纠错"));
-    ui->tabWidget->setCurrentIndex(tabno[SUBWIN_HERR]);    //设置活动标签页
-    pSubWin[SUBWIN_HERR]->show();
-    ui->pbtnHErr->setEnabled(false);   //禁用按钮
-}
-
-//打开"海明码生成"子窗体
-void MainWindow::openWinHCodeGen()
-{
-    if(nullptr != pSubWin[SUBWIN_HCGEN])
-        return;
-    //新建子窗体，添加标签页
-    pSubWin[SUBWIN_HCGEN] = new HCodeGen;
-    tabno[SUBWIN_HCGEN] = ui->tabWidget->addTab(pSubWin[SUBWIN_HCGEN], QString::fromLocal8Bit("海明码生成"));
-    ui->tabWidget->setCurrentIndex(tabno[SUBWIN_HCGEN]);    //设置活动标签页
-    pSubWin[SUBWIN_HCGEN]->show();
-    ui->pbtnHCodeGen->setEnabled(false);   //禁用按钮
 }
