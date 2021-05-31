@@ -1,5 +1,6 @@
 #include <sstream>
 #include <string>
+#include <time.h>
 #include "HammingBack.h"
 using namespace std;
 
@@ -101,5 +102,11 @@ HammingResult HammingBack::calHammingResult(string data)
 string HammingBack::hr2string(HammingResult hr)
 {
 	string res = hr.fullRes + ' ' + hr.data + ' ' + hr.check;
-	return res;
+    return res;
+}
+
+string HammingBack::randomBstring()
+{
+    srand(time(0));
+    return int2bstring(rand());
 }

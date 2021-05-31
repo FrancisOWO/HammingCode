@@ -31,4 +31,7 @@ public:
 
 	//转为full data check的字符串形式
 	std::string hr2string(HammingResult hr);
+
+    //随机生成一个nbit的string，高位在前
+    std::string randomBstring();
 };
