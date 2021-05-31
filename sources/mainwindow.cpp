@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QList>
+//#include <QList>
 #include <QString>
 #include <QMessageBox>
 #include <QScrollBar>
@@ -119,11 +119,13 @@ void MainWindow::openSubWin(int index)
         return;
     //子窗体绑定到滚动条区域
     tabScrArea[index].setWidget(pSubWin[index]);
-    //重设按钮样式（之前的样式被ScrollArea的样式覆盖）
+    ///重设按钮样式（之前的样式被ScrollArea的样式覆盖）
+    ///此步骤改为在各子窗体的构造函数内进行，否则子窗体构造时设置的样式将被覆盖
+    /*
     QList<QPushButton *> pbtns = pSubWin[index]->findChildren<QPushButton *>();
     foreach (QPushButton *pbtn, pbtns){
         pbtn->setStyleSheet("background:#F0F0F0");
-    }
+    } */
     //滚动条区域绑定到标签页
     tabno[index] = ui->tabWidget->addTab(&(tabScrArea[index]), tabTitle);
     ui->tabWidget->setCurrentIndex(tabno[index]);    //设置活动标签页
