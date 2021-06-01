@@ -325,7 +325,7 @@
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">border:1px solid grey</string>
+             <string notr="true">background:#F0F0F0;border:1px solid grey</string>
             </property>
             <property name="text">
              <string>0 </string>
@@ -416,7 +416,7 @@
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">border:1px solid grey</string>
+             <string notr="true">background:#F0F0F0;border:1px solid grey</string>
             </property>
             <property name="text">
              <string>0 </string>
@@ -514,7 +514,7 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true"/>
+         <string notr="true">background:#F0F0F0</string>
         </property>
         <property name="text">
          <string>计算输出</string>

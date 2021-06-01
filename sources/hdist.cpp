@@ -27,7 +27,6 @@ void HDist::InitMembers()
     pressStyle = "QPushButton:pressed{background:#D0E0FC}";
     pbtnStyle0 = "QPushButton{background:#F0F0F0}";
     pbtnStyle1 = "QPushButton{background:#C0C0C0}";
-    ui->pbtnCompute->setStyleSheet(pbtnStyle0 + hoverStyle + pressStyle);
     //设置默认输入位数
     int deftBit = BIT_MAX;
     ui->spinBit->setValue(deftBit);

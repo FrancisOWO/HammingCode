@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>543</width>
-    <height>752</height>
+    <width>534</width>
+    <height>695</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,19 +32,6 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <spacer name="verticalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>2</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
        <widget class="QLabel" name="label_6">
         <property name="minimumSize">
          <size>
@@ -63,6 +50,9 @@
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -86,10 +76,13 @@
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>2</height>
+          <height>5</height>
          </size>
         </property>
        </spacer>
@@ -232,6 +225,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="genRandom">
+          <property name="styleSheet">
+           <string notr="true">background:#ECECEC</string>
+          </property>
           <property name="text">
            <string>随机生成</string>
           </property>
@@ -239,6 +235,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="pushButton_2">
+          <property name="styleSheet">
+           <string notr="true">background:#ECECEC</string>
+          </property>
           <property name="text">
            <string>刷新结果</string>
           </property>
@@ -279,6 +278,9 @@
           </item>
           <item>
            <widget class="QLabel" name="check_num2">
+            <property name="styleSheet">
+             <string notr="true">background:#F0F0F0</string>
+            </property>
             <property name="frameShape">
              <enum>QFrame::Box</enum>
             </property>
@@ -358,6 +360,9 @@
            <widget class="QLabel" name="check_num1">
             <property name="mouseTracking">
              <bool>false</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background:#F0F0F0</string>
             </property>
             <property name="frameShape">
              <enum>QFrame::Box</enum>
