@@ -29,10 +29,11 @@ public:
 
 private:
     Ui::HDist *ui;
+    //输入输出数据块
     QPushButton DataIn1[BIT_MAX];
     QPushButton DataIn2[BIT_MAX];
     QPushButton DataOut[BIT_MAX];
-
+    //按钮样式
     QString pbtnStyle0, pbtnStyle1;
     QString hoverStyle, pressStyle;
 

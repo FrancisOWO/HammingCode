@@ -98,9 +98,15 @@ void MainWindow::closeTab(int index)
 //打开子窗体
 void MainWindow::openSubWin(int index)
 {
-    //判断index是否合法，判断子窗体是否存在
-    if(index < 0 || index > SUBWIN_MAX || nullptr != pSubWin[index])
+    //index非法，退出
+    if(index < 0 || index > SUBWIN_MAX)
         return;
+    //子窗体已存在，置为活动标签页
+    if(pSubWin[index] != nullptr){
+        if(ui->tabWidget->currentIndex() != tabno[index])
+            ui->tabWidget->setCurrentIndex(tabno[index]);
+        return;
+    }
     //新建子窗体，添加标签页
     QString tabTitle;
     if(index == SUBWIN_HDIST){       //海明距离
@@ -130,12 +136,5 @@ void MainWindow::openSubWin(int index)
     tabno[index] = ui->tabWidget->addTab(&(tabScrArea[index]), tabTitle);
     ui->tabWidget->setCurrentIndex(tabno[index]);    //设置活动标签页
     pSubWin[index]->show();
-    //禁用按钮
-    if(index == SUBWIN_HDIST)       //海明距离
-        ui->pbtnHDist->setEnabled(false);
-    else if(index == SUBWIN_HERR)   //检错与纠错
-        ui->pbtnHErr->setEnabled(false);
-    else if(index == SUBWIN_HCGEN)  //海明码生成
-        ui->pbtnHCodeGen->setEnabled(false);
 
 }

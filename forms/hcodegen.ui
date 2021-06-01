@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>679</width>
+    <width>685</width>
     <height>914</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -54,24 +54,28 @@
      <property name="title">
       <string>注意事项</string>
      </property>
-     <widget class="QLabel" name="label_5">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>30</y>
-        <width>631</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>先输入信息码的位数，再输入数据串，可在输入框中输入二进制串，或点击数据块改变某一位</string>
-      </property>
-     </widget>
+     <layout class="QVBoxLayout" name="verticalLayout_6">
+      <item>
+       <widget class="QTextBrowser" name="textBrowser">
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background:transparent;border:0px</string>
+        </property>
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;先输入信息码的位数，取值范围[3,5]。&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;再输入信息码，可在输入框中输入二进制串，或点击数据块改变某一位。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="1" column="0" rowspan="2">
@@ -134,6 +138,18 @@
    </item>
    <item row="1" column="1">
     <widget class="QGroupBox" name="groupBox_4">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>148</height>
+      </size>
+     </property>
      <property name="font">
       <font>
        <pointsize>11</pointsize>
@@ -146,7 +162,7 @@
       <item row="0" column="0">
        <widget class="QGroupBox" name="groupBox_5">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -254,6 +270,9 @@
              <property name="maximum">
               <number>5</number>
              </property>
+             <property name="value">
+              <number>4</number>
+             </property>
             </widget>
            </item>
           </layout>
@@ -279,6 +298,18 @@
    </item>
    <item row="2" column="1">
     <widget class="QGroupBox" name="groupBox_7">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="font">
       <font>
        <pointsize>11</pointsize>
@@ -327,7 +358,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lnHamBit">
+            <widget class="QLineEdit" name="lnHammBit">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -357,7 +388,7 @@
           </layout>
          </item>
          <item row="2" column="0">
-          <widget class="QLineEdit" name="lnHamCode">
+          <widget class="QLineEdit" name="lnHammCode">
            <property name="minimumSize">
             <size>
              <width>85</width>
@@ -374,7 +405,7 @@
             <string notr="true">background:#F0F0F0</string>
            </property>
            <property name="text">
-            <string>0000000</string>
+            <string>???????</string>
            </property>
            <property name="readOnly">
             <bool>true</bool>
@@ -397,7 +428,7 @@
          <item row="0" column="1" rowspan="4">
           <layout class="QVBoxLayout" name="verticalLayout_9">
            <item>
-            <widget class="QWidget" name="wgtHamLab" native="true">
+            <widget class="QWidget" name="wgtHammLab" native="true">
              <property name="minimumSize">
               <size>
                <width>400</width>
@@ -416,7 +447,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QWidget" name="wgtHamBlk" native="true">
+            <widget class="QWidget" name="wgtHammBlk" native="true">
              <property name="minimumSize">
               <size>
                <width>400</width>
@@ -485,7 +516,7 @@
          <item row="0" column="1" rowspan="5">
           <layout class="QVBoxLayout" name="verticalLayout_10">
            <item>
-            <widget class="QWidget" name="wgtPaLab" native="true">
+            <widget class="QWidget" name="wgtPrLab" native="true">
              <property name="minimumSize">
               <size>
                <width>400</width>
@@ -504,7 +535,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QWidget" name="wgtPaBlk" native="true">
+            <widget class="QWidget" name="wgtPrBlk" native="true">
              <property name="minimumSize">
               <size>
                <width>400</width>
@@ -559,7 +590,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lnPaBit">
+            <widget class="QLineEdit" name="lnPrBit">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -589,7 +620,7 @@
           </layout>
          </item>
          <item row="3" column="0">
-          <widget class="QLineEdit" name="lnPaCode">
+          <widget class="QLineEdit" name="lnPrCode">
            <property name="minimumSize">
             <size>
              <width>85</width>
@@ -606,7 +637,7 @@
             <string notr="true">background:#F0F0F0</string>
            </property>
            <property name="text">
-            <string>000</string>
+            <string>???</string>
            </property>
            <property name="readOnly">
             <bool>true</bool>
@@ -619,7 +650,7 @@
       <item row="2" column="0">
        <widget class="QGroupBox" name="groupBox_3">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -644,28 +675,44 @@
         <property name="title">
          <string>校验位</string>
         </property>
-        <layout class="QGridLayout" name="gridLayout_11">
-         <item row="0" column="1">
-          <layout class="QGridLayout" name="gridLayout_10">
-           <item row="0" column="0">
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>50</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="1" rowspan="2">
-            <layout class="QVBoxLayout" name="verticalLayout">
-             <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>28</width>
+             <height>17</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <layout class="QGridLayout" name="gridLayout_10">
+             <item row="0" column="0">
+              <widget class="QWidget" name="widget" native="true">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>50</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
               <widget class="QWidget" name="wgtP1Lab" native="true">
                <property name="minimumSize">
                 <size>
@@ -684,7 +731,32 @@
                </property>
               </widget>
              </item>
-             <item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="labP1">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>50</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background:#ECECEC;border:1px solid grey</string>
+               </property>
+               <property name="text">
+                <string>P1</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
               <widget class="QWidget" name="wgtP1Blk" native="true">
                <property name="minimumSize">
                 <size>
@@ -705,54 +777,25 @@
              </item>
             </layout>
            </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="labP1">
-             <property name="minimumSize">
-              <size>
-               <width>50</width>
-               <height>50</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>50</width>
-               <height>50</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background:#ECECEC;border:1px solid grey</string>
-             </property>
-             <property name="text">
-              <string>P1</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="1" column="1">
-          <layout class="QGridLayout" name="gridLayout_9">
-           <item row="0" column="0">
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>50</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="1" rowspan="2">
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <item>
+           <item>
+            <layout class="QGridLayout" name="gridLayout_3">
+             <item row="0" column="0">
+              <widget class="QWidget" name="widget_2" native="true">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>50</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
               <widget class="QWidget" name="wgtP2Lab" native="true">
                <property name="minimumSize">
                 <size>
@@ -771,7 +814,32 @@
                </property>
               </widget>
              </item>
-             <item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="labP2">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>50</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background:#ECECEC;border:1px solid grey</string>
+               </property>
+               <property name="text">
+                <string>P2</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
               <widget class="QWidget" name="wgtP2Blk" native="true">
                <property name="minimumSize">
                 <size>
@@ -792,70 +860,25 @@
              </item>
             </layout>
            </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="labP2">
-             <property name="minimumSize">
-              <size>
-               <width>50</width>
-               <height>50</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>50</width>
-               <height>50</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background:#ECECEC;border:1px solid grey</string>
-             </property>
-             <property name="text">
-              <string>P2</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="2" column="0">
-          <spacer name="horizontalSpacer_5">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="2" column="1">
-          <layout class="QGridLayout" name="gridLayout_8">
-           <item row="0" column="0">
-            <spacer name="horizontalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>50</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="1" rowspan="2">
-            <layout class="QVBoxLayout" name="verticalLayout_4">
-             <item>
+           <item>
+            <layout class="QGridLayout" name="gridLayout_8">
+             <item row="0" column="0">
+              <widget class="QWidget" name="widget_3" native="true">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>50</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
               <widget class="QWidget" name="wgtP3Lab" native="true">
                <property name="minimumSize">
                 <size>
@@ -874,7 +897,32 @@
                </property>
               </widget>
              </item>
-             <item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="labP3">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>50</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background:#ECECEC;border:1px solid grey</string>
+               </property>
+               <property name="text">
+                <string>P3</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
               <widget class="QWidget" name="wgtP3Blk" native="true">
                <property name="minimumSize">
                 <size>
@@ -895,90 +943,42 @@
              </item>
             </layout>
            </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="labP3">
-             <property name="minimumSize">
-              <size>
-               <width>50</width>
-               <height>50</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>50</width>
-               <height>50</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background:#ECECEC;border:1px solid grey</string>
-             </property>
-             <property name="text">
-              <string>P3</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0" colspan="2">
-            <layout class="QGridLayout" name="gridLayout_3">
+           <item>
+            <layout class="QGridLayout" name="gridLayout_9">
              <item row="0" column="0">
-              <spacer name="horizontalSpacer_4">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
+              <widget class="QWidget" name="widget_4" native="true">
+               <property name="minimumSize">
                 <size>
                  <width>50</width>
                  <height>20</height>
                 </size>
                </property>
-              </spacer>
+               <property name="maximumSize">
+                <size>
+                 <width>50</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </widget>
              </item>
-             <item row="0" column="1" rowspan="2">
-              <layout class="QVBoxLayout" name="verticalLayout_5">
-               <item>
-                <widget class="QWidget" name="wgtP4Lab" native="true">
-                 <property name="minimumSize">
-                  <size>
-                   <width>400</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>400</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">border:1px solid #C0C0C0</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QWidget" name="wgtP4Blk" native="true">
-                 <property name="minimumSize">
-                  <size>
-                   <width>400</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>400</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">border:1px solid #C0C0C0</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+             <item row="0" column="1">
+              <widget class="QWidget" name="wgtP4Lab" native="true">
+               <property name="minimumSize">
+                <size>
+                 <width>400</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>400</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border:1px solid #C0C0C0</string>
+               </property>
+              </widget>
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="labP4">
@@ -1002,6 +1002,25 @@
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QWidget" name="wgtP4Blk" native="true">
+               <property name="minimumSize">
+                <size>
+                 <width>400</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>400</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border:1px solid #C0C0C0</string>
                </property>
               </widget>
              </item>

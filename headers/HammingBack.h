@@ -25,6 +25,15 @@ public:
 	//传入2个string代表的01串，传出汉明距离，以长串为标准，最高32位
 	int calHammingDistance(std::string num1, std::string num2);
 
+    //传入数据位数，传出校验位数
+    int calCheckLen(int dataLen);
+
+    //传入数据位数和校验位标号，传出计算该校验位所用的数据位个数
+    int calCheckDatalen(int dataLen, int checkNo);
+
+    //传入数据位数和校验位标号，填充计算该校验位所用的数据位标号序列
+    void calCheckDnoList(int dataLen, int checkNo, int *dnoList, int dlen);
+
 	//传入一个string代表的01串，传出编码后的HammingResult
 	//HammingResult : {full, data, check}
 	HammingResult calHammingResult(std::string data);
