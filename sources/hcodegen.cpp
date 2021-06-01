@@ -1,7 +1,10 @@
 #include "hcodegen.h"
 #include "ui_hcodegen.h"
 #include <QString>
+#include <QPoint>
 #include <QSpinBox>
+#include <QPropertyAnimation>
+#include <QDebug>
 
 HCodeGen::HCodeGen(SubWindow *parent) :
     SubWindow(parent),
@@ -21,13 +24,27 @@ HCodeGen::~HCodeGen()
 //初始化数据成员
 void HCodeGen::InitMembers()
 {
+    //海明码H对应的信息位D/校验位P
+    for(int i = 0; i < HAMM_MAX; i++)
+        HammLink[i] = 0;        //清零
+    for(int base=1, i=1; base < HAMM_MAX; base<<=1, i++)
+        HammLink[base-1] = -i;  //校验位P?记负数
+    for(int i=2, cnt=1; i < HAMM_MAX; i++){
+        if(HammLink[i] != 0)
+            continue;
+        HammLink[i] = cnt;      //信息位D?记正数
+        DataLink[cnt-1] = i;
+        cnt++;
+    }
+    //for(int i = 0; i < HAMM_MAX; i++)
+    //  qDebug() << "H"+QString::number(i+1) << "=" << HammLink[i];
+
     //样式
     pbtnStyle0 = "QPushButton{background:#F0F0F0}";
     pbtnStyle1 = "QPushButton{background:#C0C0C0}";
     hoverStyle = "QPushButton:hover{background:#DCF0FC}";
     pressStyle = "QPushButton:pressed{background:#D0E0FC}";
     QString labStyle = "background:#F0F0F0";
-
     //数据块/标签初始化
     int blk_w = 30, blk_h = 30, delta_w = 10;
     int blk_x, blk_y = 10, ofs_x = 10;
@@ -96,8 +113,12 @@ void HCodeGen::InitMembers()
     wgtPrLab[2] = ui->wgtP3Lab; wgtPrLab[3] = ui->wgtP4Lab;
     // //每个区域的数据块与标签
     delta_w = 20;
+    HammingBack converter;
     // // //操作数和结果
     for(int i = 0; i < PARITY_MAX; i++){
+        //计算校验码对应的所有信息位
+        int dlen = converter.calCheckDatalen(DATA_MAX, i+1);
+        converter.calCheckDnoList(DATA_MAX, i+1, PrDnos[i], dlen);
         blk_x = ofs_x;
         for(int j = 0; j < OPRD_MAX+1; j++){
             //数据块
@@ -109,7 +130,7 @@ void HCodeGen::InitMembers()
             PrRowLabs[i][j].setParent(wgtPrLab[i]);
             PrRowLabs[i][j].setStyleSheet(labStyle);
             PrRowLabs[i][j].setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-            PrRowLabs[i][j].setText("D?");
+            PrRowLabs[i][j].setText("H?");
             PrRowLabs[i][j].setGeometry(blk_x, lab_y, blk_w, lab_h);
             //更新坐标
             blk_x += blk_w + delta_w;
@@ -146,6 +167,12 @@ void HCodeGen::InitMembers()
 void HCodeGen::InitConnections()
 {
     connect(ui->spinDataBit, SIGNAL(valueChanged(int)), this, SLOT(setBlkVis(int)));
+    //动画样例
+    connect(ui->pbtnHamStep, &QPushButton::clicked, [=](){
+        ui->lnDataCode->setReadOnly(true);        //不可修改
+        ui->pbtnHamStep->setEnabled(false);     //禁用按钮
+        moveDataBlk();
+    });
 
 }
 
@@ -207,35 +234,79 @@ void HCodeGen::setBlkVis(int data_bits)
     //校验位
     for(int i = 0; i < parity_bits; i++){
         //求出计算校验位所用的数据位
-        int optr_len = converter.calCheckDatalen(data_bits, i+1);
-        int *optr_list = new int[optr_len];
-        converter.calCheckDnoList(data_bits, i+1, optr_list, optr_len);
+        int dlen = converter.calCheckDatalen(data_bits, i+1) - 1;
         //显示操作数块
-        for(int j = 0; j < optr_len; j++){
+        for(int j = 0; j < dlen; j++){
             PrRowBlks[i][j].setVisible(true);   //数据块
             PrRowLabs[i][j].setVisible(true);   //标签
-            PrRowLabs[i][j].setText("D"+QString::number(optr_list[j]));
+            PrRowLabs[i][j].setText("H"+QString::number(PrDnos[i][j+1]));
             //设置操作符
             PrRowOptrBlks[i][j].setVisible(true);
             PrRowOptrLabs[i][j].setVisible(true);
             PrRowOptrBlks[i][j].setText("+");
             PrRowOptrLabs[i][j].setText("+");
         }
-        PrRowOptrBlks[i][optr_len-1].setText("=");
-        PrRowOptrLabs[i][optr_len-1].setText("=");
-        delete []optr_list;
+        PrRowOptrBlks[i][dlen-1].setText("=");
+        PrRowOptrLabs[i][dlen-1].setText("=");
         //显示结果块
-        PrRowBlks[i][optr_len].setVisible(true);
-        PrRowLabs[i][optr_len].setVisible(true);
-        PrRowLabs[i][optr_len].setText("P"+QString::number(i+1));
+        PrRowBlks[i][dlen].setVisible(true);
+        PrRowLabs[i][dlen].setVisible(true);
+        PrRowLabs[i][dlen].setText("H"+QString::number(PrDnos[i][0]));
         //隐藏多余块
-        for(int j = optr_len+1; j < OPRD_MAX+1; j++){
-            PrRowBlks[i][j].setVisible(false);   //数据块
-            PrRowLabs[i][j].setVisible(false);   //标签
-        }
-        for(int j = optr_len; j < OPTR_MAX; j++){
+        for(int j = dlen; j < OPTR_MAX; j++){
             PrRowOptrBlks[i][j].setVisible(false);  //操作符(数据块区)
             PrRowOptrLabs[i][j].setVisible(false);  //操作符(标签区)
         }
+        for(int j = dlen+1; j < OPRD_MAX+1; j++){
+            PrRowBlks[i][j].setVisible(false);   //数据块
+            PrRowLabs[i][j].setVisible(false);   //标签
+        }
     }
+}
+
+//移动信息码数据块
+void HCodeGen::moveDataBlk()
+{
+    int duration_ms = 800;
+    static int cnt = 0;
+    if(cnt >= ui->spinDataBit->value())
+        cnt = 0;
+    moveBlk(&(DataBlk[cnt]), &(HammBlk[DataLink[cnt]]), duration_ms);
+    cnt++;
+}
+
+//移动数据块
+void HCodeGen::moveBlk(QPushButton *pStart, QPushButton *pEnd, int duration_ms)
+{
+    QPoint pt_start = pStart->mapTo(this, QPoint(0,0)); //起点
+    QPoint pt_end = pEnd->mapTo(this, QPoint(0,0));     //终点
+    QString blkText = pStart->text();   //标签
+    QString blkStyle = pStart->styleSheet();
+    int blk_w = pStart->width();
+    int blk_h = pStart->height();
+    //设置动画块
+    QString tempStyle = "background:#FFCCCC;border:1px solid grey";
+    QPushButton *pBlk = &TempMoveBlk;
+    pBlk->setParent(this);
+    pBlk->setStyleSheet(tempStyle);
+    pBlk->setText(blkText);
+    pBlk->setGeometry(pt_start.x(), pt_start.y(), blk_w, blk_h);
+    pBlk->show();
+    //平移动画
+    QPropertyAnimation *pMove = new QPropertyAnimation(pBlk, "pos");
+    pMove->setDuration(duration_ms);    //延时
+    pMove->setStartValue(pt_start);     //起点
+    pMove->setEndValue(pt_end);         //终点
+    pMove->setEasingCurve(QEasingCurve::InOutQuad); //动画曲线
+    pMove->start();
+    //动画结束后，隐藏动画块
+    connect(pMove, &QPropertyAnimation::finished, [=](){
+        pBlk->setVisible(false);
+        pEnd->setText(blkText);
+        pEnd->setStyleSheet(blkStyle);
+        ui->pbtnHamStep->setEnabled(true);  //启用按钮
+        ui->lnDataCode->setReadOnly(false); //不可修改
+        emit moveFinished();
+    });
+
 }

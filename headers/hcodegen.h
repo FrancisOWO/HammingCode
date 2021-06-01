@@ -29,6 +29,9 @@ private:
     Ui::HCodeGen *ui;
 
     HammingResult HammStruct;   //海明码结构体
+    int HammLink[HAMM_MAX];     //海明码对应的信息位/校验位
+    int DataLink[DATA_MAX];     //信息位对应的海明码位
+    int PrDnos[PARITY_MAX][OPRD_MAX];   //校验位对应的所有数据位标号
     //按钮样式
     QString pbtnStyle0, pbtnStyle1;
     QString hoverStyle, pressStyle;
@@ -37,6 +40,7 @@ private:
     QPushButton DataBlk[DATA_MAX];
     QPushButton ParityBlk[PARITY_MAX];
     QPushButton PrRowBlks[PARITY_MAX][OPRD_MAX+1];  //操作数和结果
+    QPushButton TempMoveBlk;
     //数据块标签
     QLabel HammLab[HAMM_MAX];
     QLabel DataLab[DATA_MAX];
@@ -53,6 +57,13 @@ private:
 
 private slots:
     void setBlkVis(int data_bits);  //设置数据块/标签可见性
+    void moveBlk(QPushButton *pStart, QPushButton *pEnd, int duration_ms);
+
+    void moveDataBlk();
+
+signals:
+    void moveFinished();
+
 };
 
 #endif // HCODEGEN_H
