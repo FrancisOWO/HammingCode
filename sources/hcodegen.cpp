@@ -4,6 +4,8 @@
 #include <QPoint>
 #include <QSpinBox>
 #include <QPropertyAnimation>
+#include <QRegExp>
+#include <QValidator>
 #include <QDebug>
 
 HCodeGen::HCodeGen(SubWindow *parent) :
@@ -166,10 +168,16 @@ void HCodeGen::InitMembers()
 //关联信号与槽
 void HCodeGen::InitConnections()
 {
+    //输入信息码位数，改变数据块状态
     connect(ui->spinDataBit, SIGNAL(valueChanged(int)), this, SLOT(setBlkVis(int)));
+    //输入信息码，更新信息码数据块的值
+    connect(ui->lnDataCode, SIGNAL(textChanged(const QString &)), this, SLOT(updateDataBlk(const QString &)));
+    for(int i = 0; i < DATA_MAX; i++)       //点击按钮，反转数据块的值
+        connect(&(DataBlk[i]), &QPushButton::clicked, [=](){flipDataBit(i);});
+
     //动画样例
     connect(ui->pbtnHamStep, &QPushButton::clicked, [=](){
-        ui->lnDataCode->setReadOnly(true);        //不可修改
+        ui->lnDataCode->setReadOnly(true);      //不可修改
         ui->pbtnHamStep->setEnabled(false);     //禁用按钮
         moveDataBlk();
     });
@@ -179,6 +187,10 @@ void HCodeGen::InitConnections()
 //设置可见性
 void HCodeGen::setBlkVis(int data_bits)
 {
+    //限制信息码输入框只能输指定长度的0/1串
+    QString rgx0 = QString("^[0-1]{%1}$").arg(data_bits);
+    QValidator *vdt = new QRegExpValidator(QRegExp(rgx0));
+    ui->lnDataCode->setValidator(vdt);
     //信息码
     QString valStr, valStr0 = "0", valUnknown = "?";
     for(int i = 0; i < data_bits; i++){
@@ -260,6 +272,38 @@ void HCodeGen::setBlkVis(int data_bits)
         for(int j = dlen+1; j < OPRD_MAX+1; j++){
             PrRowBlks[i][j].setVisible(false);   //数据块
             PrRowLabs[i][j].setVisible(false);   //标签
+        }
+    }
+}
+
+//反转数据块
+void HCodeGen::flipDataBit(int index)
+{
+    int bits = ui->spinDataBit->value();
+    QString valStr;
+    for(int i = 0; i < bits; i++)
+        valStr = valStr + DataBlk[i].text();
+    if(DataBlk[index].text() == "0")
+        valStr[index] = '1';
+    else
+        valStr[index] = '0';
+    //设置信息码
+    ui->lnDataCode->setText(valStr);
+
+}
+
+//更新信息码数据块
+void HCodeGen::updateDataBlk(const QString &dataStr)
+{
+    int len = dataStr.length();
+    for(int i = 0; i < len; i++){
+        if(dataStr[i] == '0'){   //逆序判断
+            DataBlk[i].setStyleSheet(pbtnStyle0);
+            DataBlk[i].setText("0");
+        }
+        else {
+            DataBlk[i].setStyleSheet(pbtnStyle1);
+            DataBlk[i].setText("1");
         }
     }
 }

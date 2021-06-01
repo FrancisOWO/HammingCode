@@ -60,6 +60,8 @@ private slots:
     void moveBlk(QPushButton *pStart, QPushButton *pEnd, int duration_ms);
 
     void moveDataBlk();
+    void updateDataBlk(const QString &dataStr);
+    void flipDataBit(int index);
 
 signals:
     void moveFinished();
