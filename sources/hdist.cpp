@@ -64,8 +64,7 @@ void HDist::InitConnections()
     connect(ui->pbtnCompute, SIGNAL(clicked()), this, SLOT(updateDataOut()));
     //点击数据块，改变数字框的值
     for(int i = 0; i < BIT_MAX; i++){
-        //改变数据框的值
-        ///由于spin->block的connect，数据框变化会带动数据块变化，此处无需再connect改变数据块的操作
+        ///由于存在数字框到数据块的连接，数字框更新会带动数据块变化，updateSpinData内部需暂时解除连接以防止联动
         connect(&(DataIn1[i]), &QPushButton::clicked, [=](){updateSpinData(DATA_IN1, i);});
         connect(&(DataIn2[i]), &QPushButton::clicked, [=](){updateSpinData(DATA_IN2, i);});
     }
@@ -146,10 +145,15 @@ void HDist::updateSpinData(int choice, int pos)
 {
     //选择数字框
     QSpinBox *pSpin = nullptr;
-    if(choice == DATA_IN1)
+    QPushButton *pDataBlk = nullptr;
+    if(choice == DATA_IN1){
         pSpin = ui->spinIn1;
-    else if(choice == DATA_IN2)
+        pDataBlk = DataIn1;
+    }
+    else if(choice == DATA_IN2){
         pSpin = ui->spinIn2;
+        pDataBlk = DataIn2;
+    }
     else
         return;
     //计算掩码
@@ -158,7 +162,15 @@ void HDist::updateSpinData(int choice, int pos)
     //更新数字框的值
     int val = pSpin->value();
     val = val ^ change;
-    pSpin->setValue(val);
+    ///设置数字框的值时，为防止数字框更新带动数据块变化，需暂时解除连接
+    disconnect(pSpin, SIGNAL(valueChanged(int)), this, 0);    //解除连接
+    pSpin->setValue(val);               //设置数字框
+    flipBlockData(&(pDataBlk[pos]));    //反转数据块
+    //恢复连接
+    if(choice == DATA_IN1)
+        connect(pSpin, SIGNAL(valueChanged(int)), this, SLOT(updateBlockIn1(int)));
+    else if(choice == DATA_IN2)
+        connect(pSpin, SIGNAL(valueChanged(int)), this, SLOT(updateBlockIn2(int)));
 
 }
 

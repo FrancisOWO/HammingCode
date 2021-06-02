@@ -13,6 +13,8 @@
 #define OPRD_MAX    (HAMM_MAX+1)/2
 #define OPTR_MAX    OPRD_MAX
 
+#define INIT_STATUS -1
+
 namespace Ui {
 class HCodeGen;
 }
@@ -29,12 +31,15 @@ private:
     Ui::HCodeGen *ui;
 
     HammingResult HammStruct;   //海明码结构体
+    int dataBits, parityBits;   //信息位数、校验位数
     int HammLink[HAMM_MAX];     //海明码对应的信息位/校验位
     int DataLink[DATA_MAX];     //信息位对应的海明码位
     int PrDnos[PARITY_MAX][OPRD_MAX];   //校验位对应的所有数据位标号
+    int stepStatus;             //单步动画状态
+    QString stepStatusStr;      //状态文字
     //按钮样式
-    QString pbtnStyle0, pbtnStyle1;
-    QString hoverStyle, pressStyle;
+    QString pbtnStyle0, pbtnStyle1, unknownStyle;
+    QString hoverStyle, pressStyle, moveStyle;
     //数据块
     QPushButton HammBlk[HAMM_MAX];
     QPushButton DataBlk[DATA_MAX];
@@ -57,11 +62,18 @@ private:
 
 private slots:
     void setBlkVis(int data_bits);  //设置数据块/标签可见性
-    void moveBlk(QPushButton *pStart, QPushButton *pEnd, int duration_ms);
+    void moveBlk(QPushButton *pStart, QPushButton *pEnd, int duration_ms,
+                 QString startStyle, QString endStyle);
 
-    void moveDataBlk();
-    void updateDataBlk(const QString &dataStr);
-    void flipDataBit(int index);
+    void moveDataBlk(int index);    //移动数据块
+    void updateDataBlk(const QString &dataStr); //更新信息码数据块
+    void flipDataBlk(int index);    //反转数据块
+
+    void setStepInit();         //设置单步动画初始状态
+    void updateStepStatus();    //更新单步动画状态
+    void setStepFinishStatus(); //设置单步动画结束状态
+
+    void setBlkUnknown();       //设置数据块状态未知
 
 signals:
     void moveFinished();

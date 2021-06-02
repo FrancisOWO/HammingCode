@@ -8,6 +8,12 @@
 #include <QValidator>
 #include <QDebug>
 
+//编码转换
+static QString cvtStr2LocalQStr(const char *str)
+{
+    return QString::fromLocal8Bit(str);
+}
+
 HCodeGen::HCodeGen(SubWindow *parent) :
     SubWindow(parent),
     ui(new Ui::HCodeGen)
@@ -26,6 +32,8 @@ HCodeGen::~HCodeGen()
 //初始化数据成员
 void HCodeGen::InitMembers()
 {
+    //单步动画状态
+    stepStatus = INIT_STATUS;
     //海明码H对应的信息位D/校验位P
     for(int i = 0; i < HAMM_MAX; i++)
         HammLink[i] = 0;        //清零
@@ -44,9 +52,11 @@ void HCodeGen::InitMembers()
     //样式
     pbtnStyle0 = "QPushButton{background:#F0F0F0}";
     pbtnStyle1 = "QPushButton{background:#C0C0C0}";
+    unknownStyle = "background:#E8F0FF";
     hoverStyle = "QPushButton:hover{background:#DCF0FC}";
     pressStyle = "QPushButton:pressed{background:#D0E0FC}";
-    QString labStyle = "background:#F0F0F0";
+    moveStyle = "background:#FFCCCC;border:1px solid grey";
+    QString labStyle = "background:#F4F4F4";
     //数据块/标签初始化
     int blk_w = 30, blk_h = 30, delta_w = 10;
     int blk_x, blk_y = 10, ofs_x = 10;
@@ -74,7 +84,7 @@ void HCodeGen::InitMembers()
     for(int i = 0; i < HAMM_MAX; i++){
         //数据块
         HammBlk[i].setParent(ui->wgtHammBlk);
-        HammBlk[i].setStyleSheet(pbtnStyle0);
+        HammBlk[i].setStyleSheet(unknownStyle);
         HammBlk[i].setText(valStrUnknown);
         HammBlk[i].setGeometry(blk_x, blk_y, blk_w, blk_h);
         //标签
@@ -91,7 +101,7 @@ void HCodeGen::InitMembers()
     for(int i = 0; i < PARITY_MAX; i++){
         //数据块
         ParityBlk[i].setParent(ui->wgtPrBlk);
-        ParityBlk[i].setStyleSheet(pbtnStyle0);
+        ParityBlk[i].setStyleSheet(unknownStyle);
         ParityBlk[i].setText(valStrUnknown);
         ParityBlk[i].setGeometry(blk_x, blk_y, blk_w, blk_h);
         //标签
@@ -125,7 +135,7 @@ void HCodeGen::InitMembers()
         for(int j = 0; j < OPRD_MAX+1; j++){
             //数据块
             PrRowBlks[i][j].setParent(wgtPrBlk[i]);
-            PrRowBlks[i][j].setStyleSheet(pbtnStyle0);
+            PrRowBlks[i][j].setStyleSheet(unknownStyle);
             PrRowBlks[i][j].setText(valStrUnknown);
             PrRowBlks[i][j].setGeometry(blk_x, blk_y, blk_w, blk_h);
             //标签
@@ -173,21 +183,104 @@ void HCodeGen::InitConnections()
     //输入信息码，更新信息码数据块的值
     connect(ui->lnDataCode, SIGNAL(textChanged(const QString &)), this, SLOT(updateDataBlk(const QString &)));
     for(int i = 0; i < DATA_MAX; i++)       //点击按钮，反转数据块的值
-        connect(&(DataBlk[i]), &QPushButton::clicked, [=](){flipDataBit(i);});
+        connect(&(DataBlk[i]), &QPushButton::clicked, [=](){flipDataBlk(i);});
 
-    //动画样例
-    connect(ui->pbtnHamStep, &QPushButton::clicked, [=](){
-        ui->lnDataCode->setReadOnly(true);      //不可修改
-        ui->pbtnHamStep->setEnabled(false);     //禁用按钮
-        moveDataBlk();
-    });
+    //单步动画
+    connect(ui->pbtnHamRestart, SIGNAL(clicked()), this, SLOT(setStepInit()));      //重新开始
+    connect(ui->pbtnHamStep, SIGNAL(clicked()), this, SLOT(updateStepStatus()));    //下一步动画
+    connect(this, SIGNAL(moveFinished()), this, SLOT(setStepFinishStatus()));       //设置动画结束状态
+}
+
+//设置数据块状态未知
+void HCodeGen::setBlkUnknown()
+{
+    QString textUnKnown = "?";
+    //海明码
+    for(int i = 0; i < HAMM_MAX; i++){
+        HammBlk[i].setText(textUnKnown);
+        HammBlk[i].setStyleSheet(unknownStyle);
+    }
+    //校验码
+    for(int i = 0; i < PARITY_MAX; i++){
+        ParityBlk[i].setText(textUnKnown);
+        ParityBlk[i].setStyleSheet(unknownStyle);
+    }
+    //校验位
+    for(int i = 0; i < PARITY_MAX; i++){
+        for(int j = 0; j < OPRD_MAX+1; j++){
+            PrRowBlks[i][j].setText(textUnKnown);
+            PrRowBlks[i][j].setStyleSheet(unknownStyle);
+        }
+    }
+
+}
+
+//设置单步动画初始状态
+void HCodeGen::setStepInit()
+{
+    stepStatusStr = cvtStr2LocalQStr("海明码生成\n(单步动画)");
+    setStepFinishStatus();
+    stepStatus = INIT_STATUS;
+    //允许输入
+    ui->lnDataCode->setReadOnly(false);     //输入框可修改
+    for(int i = 0; i < dataBits; i++)       //数据块可改变
+        DataBlk[i].setEnabled(true);
+    //恢复信息码数据块状态
+    QString valStr;
+    for(int i = 0; i < dataBits; i++)
+        valStr = valStr + DataBlk[i].text();
+    updateDataBlk(valStr);
+    //设置未知数据块
+    setBlkUnknown();
+
+}
+
+//更新单步动画状态
+void HCodeGen::updateStepStatus()
+{
+    ui->pbtnHamStep->setEnabled(false); //禁用按钮
+    stepStatus++;
+    if(stepStatus == 0){
+        stepStatusStr = cvtStr2LocalQStr("单步动画\n填入D1");
+        //禁用输入
+        ui->lnDataCode->setReadOnly(true);  //输入框不可修改
+        for(int i = 0; i < dataBits; i++)   //数据块不可改变
+            DataBlk[i].setEnabled(false);
+        setStepFinishStatus();
+    }
+    else if(stepStatus < dataBits){
+        stepStatusStr = cvtStr2LocalQStr("单步动画\n填入D")+QString::number(stepStatus+1);
+        moveDataBlk(stepStatus-1);
+    }
+    else if(stepStatus == dataBits){
+        stepStatusStr = cvtStr2LocalQStr("单步动画\n计算P1");
+        moveDataBlk(stepStatus-1);
+    }
+    else {
+        setStepInit();      //恢复初始状态
+    }
+}
+
+//设置单步动画结束状态
+void HCodeGen::setStepFinishStatus()
+{
+    ui->pbtnHamStep->setText(stepStatusStr);//更新按钮文字
+    ui->pbtnHamStep->setEnabled(true);      //启用按钮
+    //设置下一步的界面
+    if(stepStatus < dataBits){
+        //改变将要移动的数据块状态
+        DataBlk[stepStatus].setStyleSheet(moveStyle);
+    }
 
 }
 
 //设置可见性
 void HCodeGen::setBlkVis(int data_bits)
 {
+    //单步动画恢复初始状态
+    setStepInit();
     //限制信息码输入框只能输指定长度的0/1串
+    dataBits = data_bits;
     QString rgx0 = QString("^[0-1]{%1}$").arg(data_bits);
     QValidator *vdt = new QRegExpValidator(QRegExp(rgx0));
     ui->lnDataCode->setValidator(vdt);
@@ -206,9 +299,9 @@ void HCodeGen::setBlkVis(int data_bits)
 
     //校验码
     HammingBack converter;
-    int parity_bits = converter.calCheckLen(data_bits);     //校验码位数
+    parityBits = converter.calCheckLen(data_bits);     //校验码位数
     valStr = "";
-    for(int i = 0; i < parity_bits; i++){
+    for(int i = 0; i < parityBits; i++){
         valStr = valStr + valUnknown;
         ParityBlk[i].setVisible(true);
         ParityLab[i].setVisible(true);
@@ -216,7 +309,7 @@ void HCodeGen::setBlkVis(int data_bits)
         wgtPrLab[i]->setVisible(true);
         wgtPrBlk[i]->setVisible(true);
     }
-    for(int i = parity_bits; i < PARITY_MAX; i++){
+    for(int i = parityBits; i < PARITY_MAX; i++){
         ParityBlk[i].setVisible(false);
         ParityLab[i].setVisible(false);
         PrRowHead[i]->setVisible(false);
@@ -224,11 +317,11 @@ void HCodeGen::setBlkVis(int data_bits)
         wgtPrBlk[i]->setVisible(false);
     }
     //填充文本框
-    ui->lnPrBit->setText(QString::number(parity_bits));
+    ui->lnPrBit->setText(QString::number(parityBits));
     ui->lnPrCode->setText(valStr);
 
     //海明码
-    int hamm_bits = data_bits + parity_bits;
+    int hamm_bits = data_bits + parityBits;
     valStr = "";
     for(int i = 0; i < hamm_bits; i++){
         valStr = valStr + valUnknown;
@@ -244,7 +337,7 @@ void HCodeGen::setBlkVis(int data_bits)
     ui->lnHammCode->setText(valStr);
 
     //校验位
-    for(int i = 0; i < parity_bits; i++){
+    for(int i = 0; i < parityBits; i++){
         //求出计算校验位所用的数据位
         int dlen = converter.calCheckDatalen(data_bits, i+1) - 1;
         //显示操作数块
@@ -277,19 +370,30 @@ void HCodeGen::setBlkVis(int data_bits)
 }
 
 //反转数据块
-void HCodeGen::flipDataBit(int index)
+void HCodeGen::flipDataBlk(int index)
 {
+    //按钮样式
+    QString style0 = pbtnStyle0 + hoverStyle + pressStyle;
+    QString style1 = pbtnStyle1 + hoverStyle + pressStyle;
+    //计算信息码
     int bits = ui->spinDataBit->value();
     QString valStr;
     for(int i = 0; i < bits; i++)
         valStr = valStr + DataBlk[i].text();
-    if(DataBlk[index].text() == "0")
+    if(DataBlk[index].text() == "0"){
         valStr[index] = '1';
-    else
+        DataBlk[index].setText("1");
+        DataBlk[index].setStyleSheet(style1);
+    }
+    else {
         valStr[index] = '0';
-    //设置信息码
-    ui->lnDataCode->setText(valStr);
-
+        DataBlk[index].setText("0");
+        DataBlk[index].setStyleSheet(style0);
+    }
+    ///设置信息码输入框前，为防止输入框更新带动数据块更新，需暂时解除连接
+    disconnect(ui->lnDataCode, SIGNAL(textChanged(const QString &)), this, SLOT(updateDataBlk(const QString &)));   //解除连接
+    ui->lnDataCode->setText(valStr);    //设置信息码
+    connect(ui->lnDataCode, SIGNAL(textChanged(const QString &)), this, SLOT(updateDataBlk(const QString &)));      //恢复连接
 }
 
 //更新信息码数据块
@@ -297,7 +401,7 @@ void HCodeGen::updateDataBlk(const QString &dataStr)
 {
     int len = dataStr.length();
     for(int i = 0; i < len; i++){
-        if(dataStr[i] == '0'){   //逆序判断
+        if(dataStr[i] == '0'){   //顺序判断
             DataBlk[i].setStyleSheet(pbtnStyle0);
             DataBlk[i].setText("0");
         }
@@ -309,30 +413,36 @@ void HCodeGen::updateDataBlk(const QString &dataStr)
 }
 
 //移动信息码数据块
-void HCodeGen::moveDataBlk()
+void HCodeGen::moveDataBlk(int index)
 {
     int duration_ms = 800;
-    static int cnt = 0;
-    if(cnt >= ui->spinDataBit->value())
-        cnt = 0;
-    moveBlk(&(DataBlk[cnt]), &(HammBlk[DataLink[cnt]]), duration_ms);
-    cnt++;
+    if(index < 0 || index >= ui->spinDataBit->value())
+        return;
+    QString startStyle, endStyle;
+    if(DataBlk->text() == "0"){
+        startStyle = pbtnStyle0 + hoverStyle + pressStyle;
+        endStyle = pbtnStyle0;
+    }
+    else {
+        startStyle = pbtnStyle1 + hoverStyle + pressStyle;
+        endStyle = pbtnStyle1;
+    }
+    moveBlk(&(DataBlk[index]), &(HammBlk[DataLink[index]]), duration_ms, startStyle, endStyle);
 }
 
 //移动数据块
-void HCodeGen::moveBlk(QPushButton *pStart, QPushButton *pEnd, int duration_ms)
+void HCodeGen::moveBlk(QPushButton *pStart, QPushButton *pEnd, int duration_ms,
+                       QString startStyle, QString endStyle)
 {
     QPoint pt_start = pStart->mapTo(this, QPoint(0,0)); //起点
     QPoint pt_end = pEnd->mapTo(this, QPoint(0,0));     //终点
     QString blkText = pStart->text();   //标签
-    QString blkStyle = pStart->styleSheet();
     int blk_w = pStart->width();
     int blk_h = pStart->height();
     //设置动画块
-    QString tempStyle = "background:#FFCCCC;border:1px solid grey";
     QPushButton *pBlk = &TempMoveBlk;
     pBlk->setParent(this);
-    pBlk->setStyleSheet(tempStyle);
+    pBlk->setStyleSheet(moveStyle);
     pBlk->setText(blkText);
     pBlk->setGeometry(pt_start.x(), pt_start.y(), blk_w, blk_h);
     pBlk->show();
@@ -347,9 +457,8 @@ void HCodeGen::moveBlk(QPushButton *pStart, QPushButton *pEnd, int duration_ms)
     connect(pMove, &QPropertyAnimation::finished, [=](){
         pBlk->setVisible(false);
         pEnd->setText(blkText);
-        pEnd->setStyleSheet(blkStyle);
-        ui->pbtnHamStep->setEnabled(true);  //启用按钮
-        ui->lnDataCode->setReadOnly(false); //不可修改
+        pEnd->setStyleSheet(endStyle);
+        pStart->setStyleSheet(startStyle);
         emit moveFinished();
     });
 

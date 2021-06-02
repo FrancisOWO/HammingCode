@@ -134,6 +134,23 @@ p, li { white-space: pre-wrap; }
 (单步动画)</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="pbtnHamRestart">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>210</y>
+        <width>101</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background:#F0F0F0</string>
+      </property>
+      <property name="text">
+       <string>单步动画
+重新开始</string>
+      </property>
+     </widget>
     </widget>
    </item>
    <item row="1" column="1">
