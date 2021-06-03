@@ -2,8 +2,9 @@
 #define HCODEGEN_H
 
 #include <QWidget>
-#include <QPushButton>
 #include <QLabel>
+#include <QPushButton>
+#include <QPropertyAnimation>
 #include "subwindow.h"
 #include "HammingBack.h"
 
@@ -30,11 +31,12 @@ public:
 private:
     Ui::HCodeGen *ui;
 
-    HammingResult HammStruct;   //海明码结构体
+    HammingResult HammResult;   //海明码结构体
     int dataBits, parityBits;   //信息位数、校验位数
     int HammLink[HAMM_MAX];     //海明码对应的信息位/校验位
     int DataLink[DATA_MAX];     //信息位对应的海明码位
-    int PrDnos[PARITY_MAX][OPRD_MAX];   //校验位对应的所有数据位标号
+    int PrHnos[PARITY_MAX][OPRD_MAX];   //校验位对应的所有海明码位标号
+    int PrHnoLen[PARITY_MAX];   //校验位对应的海明码位个数
     int stepStatus;             //单步动画状态
     QString stepStatusStr;      //状态文字
     //按钮样式
@@ -45,7 +47,6 @@ private:
     QPushButton DataBlk[DATA_MAX];
     QPushButton ParityBlk[PARITY_MAX];
     QPushButton PrRowBlks[PARITY_MAX][OPRD_MAX+1];  //操作数和结果
-    QPushButton TempMoveBlk;
     //数据块标签
     QLabel HammLab[HAMM_MAX];
     QLabel DataLab[DATA_MAX];
@@ -62,12 +63,16 @@ private:
 
 private slots:
     void setBlkVis(int data_bits);  //设置数据块/标签可见性
-    void moveBlk(QPushButton *pStart, QPushButton *pEnd, int duration_ms,
-                 QString startStyle, QString endStyle);
+    QPropertyAnimation *moveBlk(QPushButton *pStart, QPushButton *pEnd,
+                 int duration_ms, QString startStyle, QString endStyle);
 
-    void moveDataBlk(int index);    //移动数据块
-    void updateDataBlk(const QString &dataStr); //更新信息码数据块
-    void flipDataBlk(int index);    //反转数据块
+    void moveDataBlk(int index);    //移动信息码数据块
+    void updateDataBlk(const QString &dataStr);         //更新信息码数据块
+    void setBlkStatus(QPushButton *pbtn, int status);   //设置数据块状态
+    void flipDataBlk(int index);    //反转信息码数据块
+
+    void genPrBlk(int index);       //计算校验位，生成校验位数据块
+    void moveParityrBlk(int index); //移动校验码数据块
 
     void setStepInit();         //设置单步动画初始状态
     void updateStepStatus();    //更新单步动画状态
