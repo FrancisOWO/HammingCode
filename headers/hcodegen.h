@@ -73,6 +73,7 @@ private:
 
     void updateDataCode();  //更新信息码框
     void updatePrBitLab();  //更新校验位二进制标签
+    void setBtnsEnabled(bool flag);     //设置按钮启用/禁用
 
 private slots:
     void changeSpeed();     //改变动画播放速度

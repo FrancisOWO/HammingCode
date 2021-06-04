@@ -294,6 +294,15 @@ void HCodeGen::updatePrBitLab()
 
 }
 
+//设置按钮启用/禁用
+void HCodeGen::setBtnsEnabled(bool flag)
+{
+    ui->pbtnHamFinal->setEnabled(flag);     //一次性生成海明码
+    ui->pbtnHamStep->setEnabled(flag);      //单步动画
+    ui->pbtnHamRestart->setEnabled(flag);   //重新开始
+    ui->pbtnSpeed->setEnabled(flag);        //调整速度
+}
+
 //改变动画播放速度
 void HCodeGen::changeSpeed()
 {
@@ -360,7 +369,7 @@ void HCodeGen::setStepInit()
 //更新单步动画状态
 void HCodeGen::updateStepStatus()
 {
-    ui->pbtnHamStep->setEnabled(false); //禁用按钮
+    setBtnsEnabled(false);  //禁用按钮
     stepStatus++;
     int lastParityStatus = dataBits + parityBits;
     int finalStatus = lastParityStatus + parityBits;
@@ -417,7 +426,7 @@ void HCodeGen::updateStepStatus()
 void HCodeGen::setStepFinishStatus()
 {
     ui->pbtnHamStep->setText(stepStatusStr);    //更新按钮文字
-    ui->pbtnHamStep->setEnabled(true);          //启用按钮
+    setBtnsEnabled(true);   //启用按钮
     //设置下一步的界面
     int lastParityStatus = dataBits + parityBits;
     int finalStatus = lastParityStatus + parityBits;
