@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>685</width>
-    <height>914</height>
+    <height>964</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -43,7 +43,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>90</height>
+       <height>100</height>
       </size>
      </property>
      <property name="font">
@@ -71,86 +71,12 @@
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;先输入信息码的位数，取值范围[3,5]。&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;再输入信息码，可在输入框中输入二进制串，或点击数据块改变某一位。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;再输入信息码，可在输入框中输入二进制串，或点击数据块改变某一位。&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;动画开始后，输入不可修改。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item row="1" column="0" rowspan="2">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>520</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>120</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>11</pointsize>
-      </font>
-     </property>
-     <property name="title">
-      <string>选项</string>
-     </property>
-     <widget class="QPushButton" name="pbtnHamAll">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>101</width>
-        <height>81</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background:#F0F0F0</string>
-      </property>
-      <property name="text">
-       <string>计算海明码
-(完整动画)</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbtnHamStep">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>120</y>
-        <width>101</width>
-        <height>81</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background:#F0F0F0</string>
-      </property>
-      <property name="text">
-       <string>计算海明码
-(单步动画)</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbtnHamRestart">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>210</y>
-        <width>101</width>
-        <height>81</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background:#F0F0F0</string>
-      </property>
-      <property name="text">
-       <string>单步动画
-重新开始</string>
-      </property>
-     </widget>
     </widget>
    </item>
    <item row="1" column="1">
@@ -336,334 +262,6 @@ p, li { white-space: pre-wrap; }
       <string>输出</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_6">
-      <item row="0" column="0">
-       <widget class="QGroupBox" name="groupBox_6">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
-        <property name="title">
-         <string>海明码</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QLabel" name="label_7">
-             <property name="minimumSize">
-              <size>
-               <width>45</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>45</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>位数：</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lnHammBit">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>34</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>34</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>7</string>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLineEdit" name="lnHammCode">
-           <property name="minimumSize">
-            <size>
-             <width>85</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>85</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background:#F0F0F0</string>
-           </property>
-           <property name="text">
-            <string>???????</string>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <spacer name="verticalSpacer_12">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>2</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="1" rowspan="4">
-          <layout class="QVBoxLayout" name="verticalLayout_9">
-           <item>
-            <widget class="QWidget" name="wgtHammLab" native="true">
-             <property name="minimumSize">
-              <size>
-               <width>400</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>400</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">border:1px solid #C0C0C0</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QWidget" name="wgtHammBlk" native="true">
-             <property name="minimumSize">
-              <size>
-               <width>400</width>
-               <height>50</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>400</width>
-               <height>50</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">border:1px solid #C0C0C0</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="1" column="0">
-          <spacer name="verticalSpacer_13">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>2</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QGroupBox" name="groupBox_8">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
-        <property name="title">
-         <string>校验码</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_5">
-         <item row="1" column="0">
-          <spacer name="verticalSpacer_16">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>2</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="1" rowspan="5">
-          <layout class="QVBoxLayout" name="verticalLayout_10">
-           <item>
-            <widget class="QWidget" name="wgtPrLab" native="true">
-             <property name="minimumSize">
-              <size>
-               <width>400</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>400</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">border:1px solid #C0C0C0</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QWidget" name="wgtPrBlk" native="true">
-             <property name="minimumSize">
-              <size>
-               <width>400</width>
-               <height>50</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>400</width>
-               <height>50</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">border:1px solid #C0C0C0</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="4" column="0">
-          <spacer name="verticalSpacer_15">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>2</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="QLabel" name="label_9">
-             <property name="minimumSize">
-              <size>
-               <width>45</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>45</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>位数：</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lnPrBit">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>34</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>34</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>3</string>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLineEdit" name="lnPrCode">
-           <property name="minimumSize">
-            <size>
-             <width>85</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>85</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background:#F0F0F0</string>
-           </property>
-           <property name="text">
-            <string>???</string>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QGroupBox" name="groupBox_3">
         <property name="sizePolicy">
@@ -1048,7 +646,445 @@ p, li { white-space: pre-wrap; }
         </layout>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QGroupBox" name="groupBox_8">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="title">
+         <string>校验码</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="1" column="0">
+          <spacer name="verticalSpacer_16">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>2</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="1" rowspan="5">
+          <layout class="QVBoxLayout" name="verticalLayout_10">
+           <item>
+            <widget class="QWidget" name="wgtPrLab" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>400</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>400</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border:1px solid #C0C0C0</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="wgtPrBlk" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>400</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>400</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border:1px solid #C0C0C0</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="4" column="0">
+          <spacer name="verticalSpacer_15">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>2</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="label_9">
+             <property name="minimumSize">
+              <size>
+               <width>45</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>45</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>位数：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lnPrBit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>34</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>34</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>3</string>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLineEdit" name="lnPrCode">
+           <property name="minimumSize">
+            <size>
+             <width>85</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>85</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:#F0F0F0</string>
+           </property>
+           <property name="text">
+            <string>???</string>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QGroupBox" name="groupBox_6">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="title">
+         <string>海明码</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="minimumSize">
+              <size>
+               <width>45</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>45</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>位数：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lnHammBit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>34</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>34</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>7</string>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLineEdit" name="lnHammCode">
+           <property name="minimumSize">
+            <size>
+             <width>85</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>85</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:#F0F0F0</string>
+           </property>
+           <property name="text">
+            <string>???????</string>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" rowspan="4">
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <item>
+            <widget class="QWidget" name="wgtHammLab" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>400</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>400</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border:1px solid #C0C0C0</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="wgtHammLink" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>400</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>400</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border:1px solid #C0C0C0</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="wgtHammBlk" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>400</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>400</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border:1px solid #C0C0C0</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <spacer name="verticalSpacer_13">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>30</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="3" column="0">
+          <spacer name="verticalSpacer_17">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>2</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
      </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" rowspan="2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>520</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>120</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="title">
+      <string>选项</string>
+     </property>
+     <widget class="QPushButton" name="pbtnHamAll">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>101</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background:#F0F0F0</string>
+      </property>
+      <property name="text">
+       <string>计算海明码
+(完整动画)</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbtnHamStep">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>101</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background:#F0F0F0</string>
+      </property>
+      <property name="text">
+       <string>计算海明码
+(单步动画)</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbtnHamRestart">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>210</y>
+        <width>101</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background:#F0F0F0</string>
+      </property>
+      <property name="text">
+       <string>单步动画
+重新开始</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbtnSpeed">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>300</y>
+        <width>101</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background:#F0F0F0</string>
+      </property>
+      <property name="text">
+       <string>倍速播放</string>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>

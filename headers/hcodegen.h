@@ -37,11 +37,14 @@ private:
     int DataLink[DATA_MAX];     //信息位对应的海明码位
     int PrHnos[PARITY_MAX][OPRD_MAX];   //校验位对应的所有海明码位标号
     int PrHnoLen[PARITY_MAX];   //校验位对应的海明码位个数
-    int stepStatus;             //单步动画状态
-    QString stepStatusStr;      //状态文字
+
+    int speedLevel;         //动画速度
+    int stepStatus;         //单步动画状态
+    QString stepStatusStr;  //状态文字
     //按钮样式
     QString pbtnStyle0, pbtnStyle1, unknownStyle;
     QString hoverStyle, pressStyle, moveStyle;
+    QString dataStyle, parityStyle;
     //数据块
     QPushButton HammBlk[HAMM_MAX];
     QPushButton DataBlk[DATA_MAX];
@@ -49,6 +52,7 @@ private:
     QPushButton PrRowBlks[PARITY_MAX][OPRD_MAX+1];  //操作数和结果
     //数据块标签
     QLabel HammLab[HAMM_MAX];
+    QLabel HammLinkLab[HAMM_MAX];
     QLabel DataLab[DATA_MAX];
     QLabel ParityLab[PARITY_MAX];
     QLabel *PrRowHead[PARITY_MAX];
@@ -60,19 +64,29 @@ private:
 
     void InitMembers();     //初始化数据成员
     void InitConnections(); //关联信号与槽
+    void InitStyles();      //初始化样式表
+
+    int cvtDno2Hno(int index);      //信息码下标->海明码下标
+    int cvtPno2Hno(int index);      //校验码下标->海明码下标
+    QString getValStr(QPushButton *pbtn, int n);    //从数据块获取数字串
+
+    void updateDataCode();  //更新信息码框
 
 private slots:
+    void changeSpeed();     //改变动画播放速度
+
     void setBlkVis(int data_bits);  //设置数据块/标签可见性
     QPropertyAnimation *moveBlk(QPushButton *pStart, QPushButton *pEnd,
                  int duration_ms, QString startStyle, QString endStyle);
 
-    void moveDataBlk(int index);    //移动信息码数据块
-    void updateDataBlk(const QString &dataStr);         //更新信息码数据块
+    void moveDataBlk(int dno);      //移动信息码块：信息码区->海明码区
+    void updateDataBlk(const QString &dataStr);         //更新信息码块（信息码区）
     void setBlkStatus(QPushButton *pbtn, int status);   //设置数据块状态
-    void flipDataBlk(int index);    //反转信息码数据块
+    void flipDataBlk(int dno);      //反转信息码块
 
-    void genPrBlk(int index);       //计算校验位，生成校验位数据块
-    void moveParityrBlk(int index); //移动校验码数据块
+    void genPrBlk(int pno);         //计算校验位，生成校验位区数据块
+    void movePrBlk(int pno);        //移动校验码块：校验位区->校验码区
+    void moveParityrBlk(int pno);   //移动校验码块：校验码区->海明码区
 
     void setStepInit();         //设置单步动画初始状态
     void updateStepStatus();    //更新单步动画状态

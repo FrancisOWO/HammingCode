@@ -14,6 +14,31 @@ static QString cvtStr2LocalQStr(const char *str)
     return QString::fromLocal8Bit(str);
 }
 
+//信息码下标->海明码下标
+int HCodeGen::cvtDno2Hno(int index)
+{
+    if(index < 0 || index >= DATA_MAX)
+        return -1;
+    return DataLink[index];
+}
+
+//校验码下标->海明码下标
+int HCodeGen::cvtPno2Hno(int index)
+{
+    if(index < 0 || index >= PARITY_MAX)
+        return -1;
+    return (1 << index) - 1;
+}
+
+//从数据块获取数字串
+QString HCodeGen::getValStr(QPushButton *pbtn, int n)
+{
+    QString valStr;
+    for(int i = 0; i < n; i++)
+        valStr = valStr + pbtn[i].text();
+    return valStr;
+}
+
 HCodeGen::HCodeGen(SubWindow *parent) :
     SubWindow(parent),
     ui(new Ui::HCodeGen)
@@ -32,8 +57,12 @@ HCodeGen::~HCodeGen()
 //初始化数据成员
 void HCodeGen::InitMembers()
 {
+    //样式初始化
+    InitStyles();
+    QString labStyle = "background:#F4F4F4";
     //单步动画状态
     stepStatus = INIT_STATUS;
+    speedLevel = 1;      //动画原速播放
     //海明码H对应的信息位D/校验位P
     for(int i = 0; i < HAMM_MAX; i++)
         HammLink[i] = 0;        //清零
@@ -49,14 +78,6 @@ void HCodeGen::InitMembers()
     //for(int i = 0; i < HAMM_MAX; i++)
     //  qDebug() << "H"+QString::number(i+1) << "=" << HammLink[i];
 
-    //样式
-    pbtnStyle0 = "QPushButton{background:#F0F0F0}";
-    pbtnStyle1 = "QPushButton{background:#C0C0C0}";
-    unknownStyle = "background:#E8F0FF";
-    hoverStyle = "QPushButton:hover{background:#DCF0FC}";
-    pressStyle = "QPushButton:pressed{background:#D0E0FC}";
-    moveStyle = "background:#FFCCCC;border:1px solid grey";
-    QString labStyle = "background:#F4F4F4";
     //数据块/标签初始化
     int blk_w = 30, blk_h = 30, delta_w = 10;
     int blk_x, blk_y = 10, ofs_x = 10;
@@ -64,15 +85,16 @@ void HCodeGen::InitMembers()
     QString valStr0 = "0", valStrUnknown = "?";
     //信息码
     blk_x = ofs_x;
+    QString style0 = pbtnStyle0 + hoverStyle + pressStyle;
     for(int i = 0; i < DATA_MAX; i++){
         //数据块
         DataBlk[i].setParent(ui->wgtDataBlk);
-        DataBlk[i].setStyleSheet(pbtnStyle0+hoverStyle+pressStyle);
+        DataBlk[i].setStyleSheet(style0);
         DataBlk[i].setText(valStr0);
         DataBlk[i].setGeometry(blk_x, blk_y, blk_w, blk_h);
         //标签
         DataLab[i].setParent(ui->wgtDataLab);
-        DataLab[i].setStyleSheet(labStyle);
+        DataLab[i].setStyleSheet(dataStyle);
         DataLab[i].setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
         DataLab[i].setText("D" + QString::number(i+1));
         DataLab[i].setGeometry(blk_x, lab_y, blk_w, lab_h);
@@ -81,6 +103,7 @@ void HCodeGen::InitMembers()
     }
     //海明码
     blk_x = ofs_x;
+    QString hammStr, hammStyle;
     for(int i = 0; i < HAMM_MAX; i++){
         //数据块
         HammBlk[i].setParent(ui->wgtHammBlk);
@@ -93,6 +116,20 @@ void HCodeGen::InitMembers()
         HammLab[i].setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
         HammLab[i].setText("H" + QString::number(i+1));
         HammLab[i].setGeometry(blk_x, lab_y, blk_w, lab_h);
+        //海明码对应的信息位/校验位标签
+        if(HammLink[i] > 0){     //信息位
+            hammStr = "D" + QString::number(HammLink[i]);
+            hammStyle = dataStyle;
+        }
+        else {    //校验位
+            hammStr = "P" + QString::number(-HammLink[i]);
+            hammStyle = parityStyle;
+        }
+        HammLinkLab[i].setParent(ui->wgtHammLink);
+        HammLinkLab[i].setStyleSheet(hammStyle);
+        HammLinkLab[i].setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+        HammLinkLab[i].setText(hammStr);
+        HammLinkLab[i].setGeometry(blk_x, lab_y, blk_w, lab_h);
         //更新坐标
         blk_x += blk_w + delta_w;
     }
@@ -107,7 +144,7 @@ void HCodeGen::InitMembers()
         //标签
         ParityLab[i].setParent(ui->wgtPrLab);
         ParityLab[i].setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-        ParityLab[i].setStyleSheet(labStyle);
+        ParityLab[i].setStyleSheet(parityStyle);
         ParityLab[i].setText("P" + QString::number(i+1));
         ParityLab[i].setGeometry(blk_x, lab_y, blk_w, lab_h);
         //更新坐标
@@ -187,10 +224,51 @@ void HCodeGen::InitConnections()
     for(int i = 0; i < DATA_MAX; i++)       //点击按钮，反转数据块的值
         connect(&(DataBlk[i]), &QPushButton::clicked, [=](){flipDataBlk(i);});
 
+    //动画速度
+    connect(ui->pbtnSpeed, SIGNAL(clicked()), this, SLOT(changeSpeed()));
     //单步动画
     connect(ui->pbtnHamRestart, SIGNAL(clicked()), this, SLOT(setStepInit()));      //重新开始
     connect(ui->pbtnHamStep, SIGNAL(clicked()), this, SLOT(updateStepStatus()));    //下一步动画
     connect(this, SIGNAL(moveFinished()), this, SLOT(setStepFinishStatus()));       //设置动画结束状态
+}
+
+//初始化样式表
+void HCodeGen::InitStyles()
+{
+    pbtnStyle0 = "QPushButton{background:#F0F0F0}";     //值为0
+    pbtnStyle1 = "QPushButton{background:#C0C0C0}";     //值为1
+    unknownStyle = "background:#E8F0FF";    //值未知
+
+    hoverStyle = "QPushButton:hover{background:#DCF0FC}";       //悬停
+    pressStyle = "QPushButton:pressed{background:#D0E0FC}";     //按压
+
+    dataStyle = "background:#FFCCCC;border:1px solid grey";     //信息块
+    parityStyle = "background:#CCCCFF;border:1px solid grey";   //校验块
+    moveStyle = "background:#FFCCCC;border:1px solid grey";     //移动
+}
+
+//更新信息码框
+void HCodeGen::updateDataCode()
+{
+    //从数据块获取数字串
+    QString valStr = getValStr(DataBlk, dataBits);
+    //为防止信息码框变化带动数据块变化，暂时解除连接
+    disconnect(ui->lnDataCode, SIGNAL(textChanged(const QString &)), this, SLOT(updateDataBlk(const QString &)));   //解除连接
+    ui->lnDataCode->setText(valStr);    //设置信息码框
+    connect(ui->lnDataCode, SIGNAL(textChanged(const QString &)), this, SLOT(updateDataBlk(const QString &)));      //恢复连接
+}
+
+//改变动画播放速度
+void HCodeGen::changeSpeed()
+{
+    if(speedLevel == 1){
+        speedLevel = 2;
+        ui->pbtnSpeed->setText(cvtStr2LocalQStr("原速播放"));
+    }
+    else {
+        speedLevel = 1;
+        ui->pbtnSpeed->setText(cvtStr2LocalQStr("倍速播放"));
+    }
 }
 
 //设置数据块状态未知
@@ -235,9 +313,7 @@ void HCodeGen::setStepInit()
     for(int i = 0; i < dataBits; i++)       //数据块可改变
         DataBlk[i].setEnabled(true);
     //恢复信息码数据块状态
-    QString valStr;
-    for(int i = 0; i < dataBits; i++)
-        valStr = valStr + DataBlk[i].text();
+    QString valStr = getValStr(DataBlk, dataBits);
     updateDataBlk(valStr);
     //设置未知数据块
     setBlkUnknown();
@@ -253,6 +329,7 @@ void HCodeGen::updateStepStatus()
     int finalStatus = lastParityStatus + parityBits;
     if(stepStatus == 0){
         stepStatusStr = cvtStr2LocalQStr("单步动画\n填入D1");
+        updateDataCode();   //更新信息码框
         //禁用输入
         ui->lnDataCode->setReadOnly(true);  //输入框不可修改
         for(int i = 0; i < dataBits; i++)   //数据块不可改变
@@ -312,14 +389,14 @@ void HCodeGen::setStepFinishStatus()
         ;
     else if(stepStatus < dataBits){
         //改变将要移动的数据块状态
-        DataBlk[stepStatus].setStyleSheet(moveStyle);
+        DataBlk[stepStatus].setStyleSheet(dataStyle);
     }
     else if(stepStatus < lastParityStatus){
         ;
     }
     else if(stepStatus < finalStatus){
         int index = stepStatus - lastParityStatus;
-        ParityBlk[index].setStyleSheet(moveStyle);
+        ParityBlk[index].setStyleSheet(parityStyle);
     }
 
 }
@@ -377,10 +454,12 @@ void HCodeGen::setBlkVis(int data_bits)
         valStr = valStr + valUnknown;
         HammBlk[i].setVisible(true);
         HammLab[i].setVisible(true);
+        HammLinkLab[i].setVisible(true);
     }
     for(int i = hamm_bits; i < HAMM_MAX; i++){
         HammBlk[i].setVisible(false);
         HammLab[i].setVisible(false);
+        HammLinkLab[i].setVisible(false);
     }
     //填充文本框
     ui->lnHammBit->setText(QString::number(hamm_bits));     //海明码位数
@@ -396,6 +475,7 @@ void HCodeGen::setBlkVis(int data_bits)
             PrRowBlks[i][j].setVisible(true);   //数据块
             PrRowLabs[i][j].setVisible(true);   //标签
             PrRowLabs[i][j].setText("H"+QString::number(PrHnos[i][j+1]));
+            PrRowLabs[i][j].setStyleSheet(dataStyle);
             //设置操作符
             PrRowOptrBlks[i][j].setVisible(true);
             PrRowOptrLabs[i][j].setVisible(true);
@@ -408,6 +488,7 @@ void HCodeGen::setBlkVis(int data_bits)
         PrRowBlks[i][dlen].setVisible(true);
         PrRowLabs[i][dlen].setVisible(true);
         PrRowLabs[i][dlen].setText("H"+QString::number(PrHnos[i][0]));
+        PrRowLabs[i][dlen].setStyleSheet(parityStyle);
         //隐藏多余块
         for(int j = dlen; j < OPTR_MAX; j++){
             PrRowOptrBlks[i][j].setVisible(false);  //操作符(数据块区)
@@ -441,25 +522,23 @@ void HCodeGen::setBlkStatus(QPushButton *pbtn, int status)
 }
 
 //反转数据块
-void HCodeGen::flipDataBlk(int index)
+void HCodeGen::flipDataBlk(int dno)
 {
     //按钮样式
     QString style0 = pbtnStyle0 + hoverStyle + pressStyle;
     QString style1 = pbtnStyle1 + hoverStyle + pressStyle;
     //计算信息码
     int bits = ui->spinDataBit->value();
-    QString valStr;
-    for(int i = 0; i < bits; i++)
-        valStr = valStr + DataBlk[i].text();
-    if(DataBlk[index].text() == "0"){
-        valStr[index] = '1';
-        DataBlk[index].setText("1");
-        DataBlk[index].setStyleSheet(style1);
+    QString valStr = getValStr(DataBlk, bits);
+    if(DataBlk[dno].text() == "0"){
+        valStr[dno] = '1';
+        DataBlk[dno].setText("1");
+        DataBlk[dno].setStyleSheet(style1);
     }
     else {
-        valStr[index] = '0';
-        DataBlk[index].setText("0");
-        DataBlk[index].setStyleSheet(style0);
+        valStr[dno] = '0';
+        DataBlk[dno].setText("0");
+        DataBlk[dno].setStyleSheet(style0);
     }
     ///设置信息码输入框前，为防止输入框更新带动数据块更新，需暂时解除连接
     disconnect(ui->lnDataCode, SIGNAL(textChanged(const QString &)), this, SLOT(updateDataBlk(const QString &)));   //解除连接
@@ -484,14 +563,14 @@ void HCodeGen::updateDataBlk(const QString &dataStr)
 }
 
 //移动信息码数据块
-void HCodeGen::moveDataBlk(int index)
+void HCodeGen::moveDataBlk(int dno)
 {
     //过滤非法值
-    if(index < 0 || index >= dataBits)
+    if(dno < 0 || dno >= dataBits)
         return;
     //设置起点块/终点块样式
     QString startStyle, endStyle;
-    if(DataBlk->text() == "0"){
+    if(DataBlk[dno].text() == "0"){
         startStyle = pbtnStyle0 + hoverStyle + pressStyle;
         endStyle = pbtnStyle0;
     }
@@ -502,12 +581,14 @@ void HCodeGen::moveDataBlk(int index)
     //平移动画
     QPropertyAnimation *pMove = nullptr;
     int duration_ms = 800;
-    moveStyle = "background:#FFCCCC;border:1px solid grey";     //移动样式
-    pMove = moveBlk(&(DataBlk[index]), &(HammBlk[DataLink[index]]), duration_ms, startStyle, endStyle);
+    int hno = cvtDno2Hno(dno);
+    moveStyle = dataStyle;     //移动样式
+    //获取动画指针
+    pMove = moveBlk(&(DataBlk[dno]), &(HammBlk[hno]), duration_ms, startStyle, endStyle);
     connect(pMove, &QPropertyAnimation::finished, [=](){
         //设置海明码框
         QString val = ui->lnHammCode->text();
-        val[DataLink[index]] = HammResult.data[index];
+        val[hno] = HammResult.data[dno];
         ui->lnHammCode->setText(val);
         //发送动画结束信号
         emit moveFinished();
@@ -516,90 +597,109 @@ void HCodeGen::moveDataBlk(int index)
 }
 
 //计算校验位，生成校验位数据块
-void HCodeGen::genPrBlk(int index)
+void HCodeGen::genPrBlk(int pno)
 {
     //过滤非法值
-    if(index < 0 || index >= parityBits)
+    if(pno < 0 || pno >= parityBits)
         return;
-    //设置起点块/终点块样式
-    QString startStyle, endStyle;
-    if(DataBlk->text() == "0"){
-        startStyle = pbtnStyle0 + hoverStyle + pressStyle;
-        endStyle = pbtnStyle0;
-    }
-    else {
-        startStyle = pbtnStyle1 + hoverStyle + pressStyle;
-        endStyle = pbtnStyle1;
-    }
     //串行动画组
     QSequentialAnimationGroup *pSeqGrp = new QSequentialAnimationGroup;
-    int n = PrHnoLen[index];
+    int n = PrHnoLen[pno];
     QPropertyAnimation **pMove = new QPropertyAnimation *[n];
     int duration_ms = 800;
     //海明码区的信息位->校验位的操作数
-    moveStyle = "background:#FFCCCC;border:1px solid grey";     //移动样式
+    QString startStyle, endStyle;   //起点块/终点块样式
+    moveStyle = dataStyle;     //移动样式
     for(int i = 0; i < n; i++){
-        int k = PrHnos[index][i+1] - 1;
+        int hno = PrHnos[pno][i+1] - 1;
+        if(HammBlk[hno].text() == "0"){
+            startStyle = pbtnStyle0 + hoverStyle + pressStyle;
+            endStyle = pbtnStyle0;
+        }
+        else {
+            startStyle = pbtnStyle1 + hoverStyle + pressStyle;
+            endStyle = pbtnStyle1;
+        }
         //qDebug() << "add anim" << QString::number(k);
-        pMove[i] = moveBlk(&(HammBlk[k]), &(PrRowBlks[index][i]), duration_ms, startStyle, endStyle);
+        //获取动画指针
+        pMove[i] = moveBlk(&(HammBlk[hno]), &(PrRowBlks[pno][i]), duration_ms, startStyle, endStyle);
         pSeqGrp->addAnimation(pMove[i]);
     }
-    //校验位区的计算结果->校验码区的校验块
-    moveStyle = "background:#CCCCFF;border:1px solid grey";     //移动样式
-    QPropertyAnimation *pFill = nullptr;
-    int prStatus = HammResult.check[index] - '0';
-    setBlkStatus(&(PrRowBlks[index][n]), prStatus); //设置起始块的值，用来给动画块赋值
-    pFill = moveBlk(&(PrRowBlks[index][n]), &(ParityBlk[index]), duration_ms, startStyle, endStyle);
-    PrRowBlks[index][n].setText("?");
     //串行动画组结束后，释放动画块及其指针数组，启动结果填入校验区动画
     connect(pSeqGrp, &QSequentialAnimationGroup::finished, [=](){
         for(int i = 0; i < n; i++)
             delete pMove[i];
         delete []pMove;
-        //设置校验块
-        //qDebug() << QString::fromStdString(HammResult.check);
-        setBlkStatus(&(PrRowBlks[index][n]), prStatus);
         //启动结果填入校验区动画
-        pFill->start(QAbstractAnimation::DeleteWhenStopped);
-    });
-    //计算动画结束后，发送结束信号
-    connect(pFill, &QPropertyAnimation::finished, [=](){
-        //设置校验码框
-        QString val = ui->lnPrCode->text();
-        val[index] = HammResult.check[index];
-        ui->lnPrCode->setText(val);
-        //发送结束信号
-        emit moveFinished();
+        movePrBlk(pno);
     });
     //启动串行动画组
     pSeqGrp->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
-//移动校验码数据块
-void HCodeGen::moveParityrBlk(int index)
+//移动校验码块：校验位区->校验码区
+void HCodeGen::movePrBlk(int pno)
 {
     //过滤非法值
-    if(index < 0 || index >= dataBits)
+    if(pno < 0 || pno >= parityBits)
         return;
-    //设置起点块/终点块样式
+    //校验位区的计算结果->校验码区的校验块
+    QPropertyAnimation *pMove = nullptr;
+    int duration_ms = 800;
+    int n = PrHnoLen[pno];
+    int prStatus = HammResult.check[pno] - '0';
+    setBlkStatus(&(PrRowBlks[pno][n]), prStatus); //设置起始块的值，用来给动画块赋值
+    //起点块/终点块样式
     QString startStyle, endStyle;
-    if(DataBlk->text() == "0"){
-        startStyle = pbtnStyle0 + hoverStyle + pressStyle;
+    if(PrRowBlks[pno][n].text() == "0"){
+        startStyle = pbtnStyle0;
         endStyle = pbtnStyle0;
     }
     else {
-        startStyle = pbtnStyle1 + hoverStyle + pressStyle;
+        startStyle = pbtnStyle1;
         endStyle = pbtnStyle1;
     }
+    moveStyle = parityStyle;     //移动样式
+    //获取动画指针
+    pMove = moveBlk(&(PrRowBlks[pno][n]), &(ParityBlk[pno]), duration_ms, startStyle, endStyle);
+    connect(pMove, &QPropertyAnimation::finished, [=](){
+        //设置校验码框
+        QString val = ui->lnPrCode->text();
+        val[pno] = HammResult.check[pno];
+        ui->lnPrCode->setText(val);
+        //发送结束信号
+        emit moveFinished();
+    });
+    //启动动画
+    pMove->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+//移动校验码块：校验码区->海明码区
+void HCodeGen::moveParityrBlk(int pno)
+{
+    //过滤非法值
+    if(pno < 0 || pno >= parityStyle)
+        return;
     //平移动画
     QPropertyAnimation *pMove = nullptr;
     int duration_ms = 800;
-    moveStyle = "background:#CCCCFF;border:1px solid grey";     //移动样式
-    pMove = moveBlk(&(ParityBlk[index]), &(HammBlk[(1<<index)-1]), duration_ms, startStyle, endStyle);
+    int hno = cvtPno2Hno(pno);
+    //设置起点块/终点块样式
+    QString startStyle, endStyle;
+    if(ParityBlk[pno].text() == "0"){
+        startStyle = pbtnStyle0;
+        endStyle = pbtnStyle0;
+    }
+    else {
+        startStyle = pbtnStyle1;
+        endStyle = pbtnStyle1;
+    }
+    moveStyle = parityStyle;     //移动样式
+    pMove = moveBlk(&(ParityBlk[pno]), &(HammBlk[hno]), duration_ms, startStyle, endStyle);
     connect(pMove, &QPropertyAnimation::finished, [=](){
         //设置海明码框
         QString val = ui->lnHammCode->text();
-        val[(1<<index)-1] = HammResult.check[index];
+        val[hno] = HammResult.check[pno];
         ui->lnHammCode->setText(val);
         //发送动画结束信号
         emit moveFinished();
@@ -625,6 +725,7 @@ QPropertyAnimation *HCodeGen::moveBlk(QPushButton *pStart, QPushButton *pEnd,
     pBlk->show();
     //平移动画
     QPropertyAnimation *pMove = new QPropertyAnimation(pBlk, "pos");
+    duration_ms /= speedLevel;      //调整延时
     pMove->setDuration(duration_ms);    //延时
     pMove->setStartValue(pt_start);     //起点
     pMove->setEndValue(pt_end);         //终点
@@ -632,9 +733,9 @@ QPropertyAnimation *HCodeGen::moveBlk(QPushButton *pStart, QPushButton *pEnd,
     //动画结束后，释放动画块，重置数据块样式
     connect(pMove, &QPropertyAnimation::finished, [=](){
         delete pBlk;
+        pStart->setStyleSheet(startStyle);
         pEnd->setText(blkText);
         pEnd->setStyleSheet(endStyle);
-        pStart->setStyleSheet(startStyle);
     });
     return pMove;
 }
