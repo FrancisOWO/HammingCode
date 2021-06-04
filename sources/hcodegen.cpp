@@ -30,6 +30,20 @@ int HCodeGen::cvtPno2Hno(int index)
     return (1 << index) - 1;
 }
 
+//计算校验码的操作数下标->海明码下标
+int HCodeGen::cvtPrHno2Hno(int pno, int index)
+{
+    if(pno < 0 || pno >= parityBits){
+        //qDebug() << "pno:"<< pno;
+        return -1;
+    }
+    if(index < 0 || index >= PrHnoLen[pno]){
+        //qDebug() << "index:"<< index;
+        return -1;
+    }
+    return PrHnos[pno][index+1] - 1;
+}
+
 //从数据块获取数字串
 QString HCodeGen::getValStr(QPushButton *pbtn, int n)
 {
@@ -166,8 +180,8 @@ void HCodeGen::InitMembers()
     // // //操作数和结果
     for(int i = 0; i < PARITY_MAX; i++){
         //计算校验码对应的所有信息位
-        int dlen = converter.calCheckDatalen(DATA_MAX, i+1);
-        converter.calCheckDnoList(DATA_MAX, i+1, PrHnos[i], dlen);
+        int dlen = converter.calChecHammlen(DATA_MAX, i+1);
+        converter.calCheckHnoList(DATA_MAX, i+1, PrHnos[i], dlen);
         blk_x = ofs_x;
         for(int j = 0; j < OPRD_MAX+1; j++){
             //数据块
@@ -230,6 +244,8 @@ void HCodeGen::InitConnections()
     connect(ui->pbtnHamRestart, SIGNAL(clicked()), this, SLOT(setStepInit()));      //重新开始
     connect(ui->pbtnHamStep, SIGNAL(clicked()), this, SLOT(updateStepStatus()));    //下一步动画
     connect(this, SIGNAL(moveFinished()), this, SLOT(setStepFinishStatus()));       //设置动画结束状态
+    //一次性生成海明码
+    connect(ui->pbtnHamFinal, SIGNAL(clicked()), this, SLOT(genAllBlk()));
 }
 
 //初始化样式表
@@ -247,7 +263,7 @@ void HCodeGen::InitStyles()
     moveStyle = "background:#FFCCCC;border:1px solid grey";     //移动
 }
 
-//更新信息码框
+//更新信息码框，根据数据块补全输入框的数据位数
 void HCodeGen::updateDataCode()
 {
     //从数据块获取数字串
@@ -256,6 +272,26 @@ void HCodeGen::updateDataCode()
     disconnect(ui->lnDataCode, SIGNAL(textChanged(const QString &)), this, SLOT(updateDataBlk(const QString &)));   //解除连接
     ui->lnDataCode->setText(valStr);    //设置信息码框
     connect(ui->lnDataCode, SIGNAL(textChanged(const QString &)), this, SLOT(updateDataBlk(const QString &)));      //恢复连接
+}
+
+//更新校验位二进制标签
+void HCodeGen::updatePrBitLab()
+{
+    QString valStr;
+    for(int i = 0; i < parityBits; i++)
+        valStr = valStr + "x";
+    QLabel *labs[PARITY_MAX] = {ui->labP1Bit, ui->labP2Bit, ui->labP3Bit, ui->labP4Bit};
+    for(int i = 0; i < parityBits; i++){
+        int k = parityBits - i - 1;
+        valStr[k] = '1';
+        labs[i]->setText(valStr);
+        labs[i]->setVisible(true);
+        valStr[k] = 'x';
+    }
+    for(int i = parityBits; i < PARITY_MAX; i++){
+        labs[i]->setVisible(false);
+    }
+
 }
 
 //改变动画播放速度
@@ -267,7 +303,7 @@ void HCodeGen::changeSpeed()
     }
     else {
         speedLevel = 1;
-        ui->pbtnSpeed->setText(cvtStr2LocalQStr("倍速播放"));
+        ui->pbtnSpeed->setText(cvtStr2LocalQStr("倍速播放(x2)"));
     }
 }
 
@@ -309,6 +345,7 @@ void HCodeGen::setStepInit()
     setStepFinishStatus();
     stepStatus = INIT_STATUS;
     //允许输入
+    ui->spinDataBit->setReadOnly(false);    //数字框可修改
     ui->lnDataCode->setReadOnly(false);     //输入框可修改
     for(int i = 0; i < dataBits; i++)       //数据块可改变
         DataBlk[i].setEnabled(true);
@@ -330,7 +367,9 @@ void HCodeGen::updateStepStatus()
     if(stepStatus == 0){
         stepStatusStr = cvtStr2LocalQStr("单步动画\n填入D1");
         updateDataCode();   //更新信息码框
+        setBlkUnknown();    //设置未知块
         //禁用输入
+        ui->spinDataBit->setReadOnly(true); //数字框不可修改
         ui->lnDataCode->setReadOnly(true);  //输入框不可修改
         for(int i = 0; i < dataBits; i++)   //数据块不可改变
             DataBlk[i].setEnabled(false);
@@ -401,6 +440,42 @@ void HCodeGen::setStepFinishStatus()
 
 }
 
+//一次性生成海明码
+void HCodeGen::genAllBlk()
+{
+    setStepInit();      //单步动画还原
+    HammingBack converter;
+    //获取信息码，计算海明码
+    ///输入框的数字串位数可能不足，应通过数据块获取信息码
+    QString dataStr = getValStr(DataBlk, dataBits);
+    updateDataCode();       //更新信息码输入框，补足位数
+    HammResult = converter.calHammingResult(dataStr.toStdString());
+    //海明码
+    int fullBits = dataBits + parityBits;
+    QString valStr = QString::fromStdString(HammResult.fullRes);
+    ui->lnHammCode->setText(valStr);            //数据框
+    for(int i = 0; i < fullBits; i++){
+        int status = HammResult.fullRes[i] - '0';
+        setBlkStatus(&(HammBlk[i]), status);    //数据块
+    }
+    //校验码
+    valStr = QString::fromStdString(HammResult.check);
+    ui->lnPrCode->setText(valStr);              //数据框
+    for(int i = 0; i < parityBits; i++){
+        int status = HammResult.check[i] - '0';
+        setBlkStatus(&(ParityBlk[i]), status);  //数据块
+        int hlen = PrHnoLen[i];
+        setBlkStatus(&(PrRowBlks[i][hlen]), status);
+        for(int j = 0; j < hlen; j++){
+            int hno = cvtPrHno2Hno(i, j);
+            //qDebug() << hno;
+            status = HammResult.fullRes[hno] - '0';
+            setBlkStatus(&(PrRowBlks[i][j]), status);
+        }
+    }
+
+}
+
 //设置可见性
 void HCodeGen::setBlkVis(int data_bits)
 {
@@ -466,12 +541,13 @@ void HCodeGen::setBlkVis(int data_bits)
     ui->lnHammCode->setText(valStr);
 
     //校验位
+    updatePrBitLab();       //更新校验位二进制标签
     for(int i = 0; i < parityBits; i++){
         //求出计算校验位所需的海明码位数
-        int dlen = converter.calCheckDatalen(data_bits, i+1) - 1;
-        PrHnoLen[i] = dlen;
+        int hlen = converter.calChecHammlen(data_bits, i+1) - 1;
+        PrHnoLen[i] = hlen;
         //显示操作数块
-        for(int j = 0; j < dlen; j++){
+        for(int j = 0; j < hlen; j++){
             PrRowBlks[i][j].setVisible(true);   //数据块
             PrRowLabs[i][j].setVisible(true);   //标签
             PrRowLabs[i][j].setText("H"+QString::number(PrHnos[i][j+1]));
@@ -482,19 +558,19 @@ void HCodeGen::setBlkVis(int data_bits)
             PrRowOptrBlks[i][j].setText("+");
             PrRowOptrLabs[i][j].setText("+");
         }
-        PrRowOptrBlks[i][dlen-1].setText("=");
-        PrRowOptrLabs[i][dlen-1].setText("=");
+        PrRowOptrBlks[i][hlen-1].setText("=");
+        PrRowOptrLabs[i][hlen-1].setText("=");
         //显示结果块
-        PrRowBlks[i][dlen].setVisible(true);
-        PrRowLabs[i][dlen].setVisible(true);
-        PrRowLabs[i][dlen].setText("H"+QString::number(PrHnos[i][0]));
-        PrRowLabs[i][dlen].setStyleSheet(parityStyle);
+        PrRowBlks[i][hlen].setVisible(true);
+        PrRowLabs[i][hlen].setVisible(true);
+        PrRowLabs[i][hlen].setText("H"+QString::number(PrHnos[i][0]));
+        PrRowLabs[i][hlen].setStyleSheet(parityStyle);
         //隐藏多余块
-        for(int j = dlen; j < OPTR_MAX; j++){
+        for(int j = hlen; j < OPTR_MAX; j++){
             PrRowOptrBlks[i][j].setVisible(false);  //操作符(数据块区)
             PrRowOptrLabs[i][j].setVisible(false);  //操作符(标签区)
         }
-        for(int j = dlen+1; j < OPRD_MAX+1; j++){
+        for(int j = hlen+1; j < OPRD_MAX+1; j++){
             PrRowBlks[i][j].setVisible(false);   //数据块
             PrRowLabs[i][j].setVisible(false);   //标签
         }

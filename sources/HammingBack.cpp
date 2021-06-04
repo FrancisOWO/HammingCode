@@ -67,8 +67,8 @@ int HammingBack::calCheckLen(int dataLen)
     return checkLen;
 }
 
-//传入数据位数和校验位标号，传出计算该校验位所用的数据位个数
-int HammingBack::calCheckDatalen(int dataLen, int checkNo)
+//传入数据位数和校验位标号，传出计算该校验位所用的海明码位个数
+int HammingBack::calChecHammlen(int dataLen, int checkNo)
 {
     int checkLen = calCheckLen(dataLen);
     //标号超范围，退出
@@ -82,13 +82,13 @@ int HammingBack::calCheckDatalen(int dataLen, int checkNo)
     int mod = dividend % divider;
     if(mod > base)
         mod = base;
-    //第一个数据位为2^n，连着取2^n个，跳过2^n个
-    int dlen = ((dividend/divider)<<(checkNo-1)) + mod;
-    return dlen;
+    //第一个H标号为2^n，连着取2^n个，跳过2^n个
+    int hlen = ((dividend/divider)<<(checkNo-1)) + mod;
+    return hlen;
 }
 
-//传入数据位数和校验位标号，填充计算该校验位所用的数据位标号序列
-void HammingBack::calCheckDnoList(int dataLen, int checkNo, int *dnoList, int dlen)
+//传入数据位数和校验位标号，填充计算该校验位所用的海明码标号序列
+void HammingBack::calCheckHnoList(int dataLen, int checkNo, int *dnoList, int hlen)
 {
     int checkLen = calCheckLen(dataLen);
     //标号超范围，退出
@@ -96,8 +96,8 @@ void HammingBack::calCheckDnoList(int dataLen, int checkNo, int *dnoList, int dl
         return;
     int base = (1 << (checkNo-1));
     int delta = base;
-    //第一个数据位为2^n，连着取2^n个，跳过2^n个
-    for(int i = 0; i < dlen; i++){
+    //第一个H标号为2^n，连着取2^n个，跳过2^n个
+    for(int i = 0; i < hlen; i++){
         dnoList[i] = base;
         base++;
         if((i+1) % delta == 0)

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>780</width>
-    <height>460</height>
+    <height>480</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -186,7 +186,7 @@ p, li { white-space: pre-wrap; }
           </font>
          </property>
          <property name="text">
-          <string>检错与纠错</string>
+          <string>检错位数与纠错位数</string>
          </property>
         </widget>
        </item>

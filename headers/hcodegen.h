@@ -68,13 +68,16 @@ private:
 
     int cvtDno2Hno(int index);      //信息码下标->海明码下标
     int cvtPno2Hno(int index);      //校验码下标->海明码下标
+    int cvtPrHno2Hno(int pno, int index);   //计算校验码的操作数下标->海明码下标
     QString getValStr(QPushButton *pbtn, int n);    //从数据块获取数字串
 
     void updateDataCode();  //更新信息码框
+    void updatePrBitLab();  //更新校验位二进制标签
 
 private slots:
     void changeSpeed();     //改变动画播放速度
 
+    void setBlkUnknown();       //设置数据块状态未知
     void setBlkVis(int data_bits);  //设置数据块/标签可见性
     QPropertyAnimation *moveBlk(QPushButton *pStart, QPushButton *pEnd,
                  int duration_ms, QString startStyle, QString endStyle);
@@ -92,7 +95,7 @@ private slots:
     void updateStepStatus();    //更新单步动画状态
     void setStepFinishStatus(); //设置单步动画结束状态
 
-    void setBlkUnknown();       //设置数据块状态未知
+    void genAllBlk();       //一次性生成海明码
 
 signals:
     void moveFinished();

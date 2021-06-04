@@ -115,7 +115,7 @@ void MainWindow::openSubWin(int index)
     }
     else if(index == SUBWIN_HERR){   //检错与纠错
         pSubWin[index] = new HErr;
-        tabTitle = QString::fromLocal8Bit("检错与纠错");
+        tabTitle = QString::fromLocal8Bit("检错位数与纠错位数");
     }
     else if(index == SUBWIN_HCGEN){  //海明码生成
         pSubWin[index] = new HCodeGen;

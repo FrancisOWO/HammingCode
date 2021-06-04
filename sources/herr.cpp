@@ -24,7 +24,7 @@ void HErr::InitMembers()
 {
     QTextCodec *codec = QTextCodec::codecForName("GBK");
 
-    //设置数字显示的按钮样式
+    //设置编码显示的按钮样式
     hoverStyle = "QPushButton:hover{background:#DCF0FC}";
     pressStyle = "QPushButton:pressed{background:#D0E0FC}";
     pbtnStyle0 = "QPushButton{background:#F0F0F0}";
@@ -32,10 +32,10 @@ void HErr::InitMembers()
 
     //int nRowCount = ui->resTable->rowCount();
     ui->resTable->setRowCount(4);
-    ui->resTable->setItem(0, 0, new QTableWidgetItem(codec->toUnicode("数字2与数字1的汉明距离")));
-    ui->resTable->setItem(1, 0, new QTableWidgetItem(codec->toUnicode("数字2与其它正确码的最小汉明距离")));
-    ui->resTable->setItem(2, 0, new QTableWidgetItem(codec->toUnicode("数字2更靠近？")));
-    ui->resTable->setItem(3, 0, new QTableWidgetItem(codec->toUnicode("其它正确码与数字1的汉明距离")));
+    ui->resTable->setItem(0, 0, new QTableWidgetItem(codec->toUnicode("【编码2】与【编码1】的码距")));
+    ui->resTable->setItem(1, 0, new QTableWidgetItem(codec->toUnicode("【编码2】与其它合法编码的最小码距")));
+    ui->resTable->setItem(2, 0, new QTableWidgetItem(codec->toUnicode("【编码2】更靠近哪个合法编码？")));
+    ui->resTable->setItem(3, 0, new QTableWidgetItem(codec->toUnicode("其它合法编码与【编码1】的码距")));
     ui->resTable->setItem(3, 1, new QTableWidgetItem(codec->toUnicode("5")));
     for (int i = 0; i < 4; i++){
         ui->resTable->setItem(i, 1, new QTableWidgetItem(codec->toUnicode(" ")));
@@ -69,7 +69,7 @@ void HErr::InitConnections()
     connect(ui->spinIn1, SIGNAL(valueChanged(int)), this, SLOT(updateSpinRelated(int)));
     connect(ui->genRandom, &QPushButton::clicked, [=](){this->newRandomData();updateResultTable();});
 
-    //数字2可以单bit点击
+    //【编码2】可以单bit点击
     for(int i = 0; i < BIT_MAX; i++)
         connect(&(DataIn2[i]), &QPushButton::clicked, [=](){updateData2ByBit(i);updateResultTable();});
 
@@ -122,16 +122,16 @@ void HErr::updateResultTable()
 
     QString num1 = this->ui->check_num1->text();
     QString num2 = this->ui->check_num2->text();
-    //数字2与数字1的汉明距离
+    //【编码2】与【编码1】的汉明距离
     HammingBack hb;
 
     int dFrom2To1 = hb.calHammingDistance(num1.toStdString(), num2.toStdString());
     int dFrom2ToOther = d > dFrom2To1 ? d - dFrom2To1 : 0;
 
     QTextCodec *codec = QTextCodec::codecForName("GBK");
-    QString moreNear = dFrom2To1 < dFrom2ToOther ? codec->toUnicode("数字1") : codec->toUnicode("其它正确码");
+    QString moreNear = dFrom2To1 < dFrom2ToOther ? codec->toUnicode("【编码1】") : codec->toUnicode("其它合法编码");
     if (dFrom2To1 == dFrom2ToOther)
-        moreNear = codec->toUnicode("距离数字1与其它正确码相同");
+        moreNear = codec->toUnicode("距离【编码1】与其它合法编码相同");
 
     //维护表格
     ui->resTable->item(0, 1)->setText(QString::number(dFrom2To1));
@@ -142,7 +142,7 @@ void HErr::updateResultTable()
 
 void HErr::updateData2ByBit(int i)
 {
-    //将数字2的状态改为当前状态取反
+    //将【编码2】的状态改为当前状态取反
     setBlockStatus(&this->DataIn2[i], !(this->DataIn2[i].text().toInt()));
 
     QString data2 = this->ui->check_num2->text();
