@@ -37,6 +37,8 @@ public:
 private:
     Ui::HCodeGen *ui;
 
+    bool codeChangeFlag[HAMM_MAX];  //编码改变标记
+
     HammingResult HammResult;   //海明码结构体
     int dataBits, parityBits;   //信息位数、校验位数
     int HammLink[HAMM_MAX];     //海明码对应的信息位/校验位
@@ -49,6 +51,7 @@ private:
     int speedLevel;         //动画速度
     int stepStatus;         //计算海明码单步动画状态
     int checkStatus;        //纠错检错单步动画状态
+
     QString stepStatusStr;  //状态文字
     //按钮样式
     QString pbtnStyle0, pbtnStyle1, unknownStyle;
@@ -67,9 +70,9 @@ private:
     QLabel DataLab[DATA_MAX];       //信息码
     QLabel ParityLab[PARITY_MAX];   //校验码
     QLabel *PrRowHead[PARITY_MAX];
-    QLabel PrRowLabs[PARITY_MAX][OPRD_MAX+2];     //操作数和结果
-    QLabel PrRowOptrLabs[PARITY_MAX][OPTR_MAX+1]; //操作符(标签区域)
-    QLabel PrRowOptrBlks[PARITY_MAX][OPTR_MAX+1]; //操作符(数据块区域)
+    QLabel PrRowLabs[PARITY_MAX][OPRD_MAX+2];           //操作数和结果
+    QLabel PrRowOptrLabs[PARITY_MAX][OPTR_MAX+1];       //操作符(标签区域)
+    QLabel PrRowOptrBlkLabs[PARITY_MAX][OPTR_MAX+1];    //操作符(数据块区域)
     QLabel CodeLab[2][HAMM_MAX];
     QLabel HammLinkLab2[HAMM_MAX];
 

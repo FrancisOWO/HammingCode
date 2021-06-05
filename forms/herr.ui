@@ -65,13 +65,13 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;设汉明距离为&lt;span style=&quot; color:#000000;&quot;&gt;d&lt;/span&gt;，则：&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;设海明距离为&lt;span style=&quot; color:#000000;&quot;&gt;d&lt;/span&gt;，则：&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  检错位数： &lt;span style=&quot; font-weight:600; color:#ff0000;&quot;&gt;d-1&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  纠错位数：&lt;span style=&quot; font-weight:600; color:#ff0000;&quot;&gt;(d-1)/2&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;用下述方式证明上述结论:&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;设【编码1】为合法编码，可随意调整【编码2】，&lt;span style=&quot; color:#ff0000;&quot;&gt;编码位数为8&lt;/span&gt;。&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;假定【编码1】所在的编码体系中，&lt;span style=&quot; color:#000000;&quot;&gt;汉明距离为d，&lt;/span&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;取值范围为[1,7]&lt;/span&gt;。&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;假定【编码1】所在的编码体系中，海明&lt;span style=&quot; color:#000000;&quot;&gt;距离为d，&lt;/span&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;取值范围为[1,7]&lt;/span&gt;。&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; color:#ff0000;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;输入海明距离d，检错位数、纠错位数会随之更新。&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;点击【随机生成编码】，会生成&lt;span style=&quot; color:#ff0000;&quot;&gt;合法编码&lt;/span&gt;【编码1】和相同的【编码2】。&lt;/p&gt;

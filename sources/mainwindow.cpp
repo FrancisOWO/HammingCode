@@ -64,7 +64,7 @@ void MainWindow::MsgAboutApp()
 {
     QString title = QString::fromLocal8Bit("关于应用");
     QString info = QString::fromLocal8Bit("【海明码】编码原理与过程演示，包括以下内容：\n"
-            "1. 海明距离\n" "2. 检错位数与纠错位数\n" "3. 海明码生成过程");
+            "1. 码距与海明距离\n" "2. 检错位数与纠错位数\n" "3. 海明码生成过程");
     QMessageBox::information(this, title, info);
 }
 
@@ -109,9 +109,9 @@ void MainWindow::openSubWin(int index)
     }
     //新建子窗体，添加标签页
     QString tabTitle;
-    if(index == SUBWIN_HDIST){       //海明距离
+    if(index == SUBWIN_HDIST){       //码距
         pSubWin[index] = new HDist;
-        tabTitle = QString::fromLocal8Bit("海明距离");
+        tabTitle = QString::fromLocal8Bit("码距");
     }
     else if(index == SUBWIN_HERR){   //检错与纠错
         pSubWin[index] = new HErr;

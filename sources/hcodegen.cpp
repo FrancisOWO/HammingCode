@@ -75,11 +75,14 @@ void HCodeGen::InitMembers()
     //样式初始化
     InitStyles();
     QString labStyle = "background:#F4F4F4";
+    //变化标志位
     rowChanged = -1;
     hammGenFlag = 0;
+    for(int i = 0; i < HAMM_MAX; i++)
+        codeChangeFlag[i] = 0;
     //单步动画状态
+    speedLevel = 1;             //原速播放
     stepStatus = INIT_STATUS;
-    speedLevel = 1;      //动画原速播放
     checkStatus = INIT_STATUS;
     ui->pbtnFillCodeIn->setEnabled(false);
     //海明码H对应的信息位D/校验位P
@@ -108,19 +111,10 @@ void HCodeGen::InitMembers()
     for(int i = 0; i < DATA_MAX; i++){
         //数据块
         setPbtnProp(&(DataBlk[i]), ui->wgtDataBlk, style0, valStr0);
-        /*
-        DataBlk[i].setParent(ui->wgtDataBlk);
-        DataBlk[i].setStyleSheet(style0);
-        DataBlk[i].setText(valStr0);*/
         DataBlk[i].setGeometry(blk_x, blk_y, blk_w, blk_h);
         //标签
         setLabProp(&(DataLab[i]), ui->wgtDataLab, dataStyle,
                    Qt::AlignHCenter|Qt::AlignVCenter, "D" + QString::number(i+1));
-        /*
-        DataLab[i].setParent(ui->wgtDataLab);
-        DataLab[i].setStyleSheet(dataStyle);
-        DataLab[i].setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-        DataLab[i].setText("D" + QString::number(i+1));*/
         DataLab[i].setGeometry(blk_x, lab_y, blk_w, lab_h);
         //更新坐标
         blk_x += blk_w + delta_w;
@@ -175,19 +169,10 @@ void HCodeGen::InitMembers()
     for(int i = 0; i < PARITY_MAX; i++){
         //数据块
         setPbtnProp(&(ParityBlk[i]), ui->wgtPrBlk, unknownStyle, valStrUnknown);
-        /*
-        ParityBlk[i].setParent(ui->wgtPrBlk);
-        ParityBlk[i].setStyleSheet(unknownStyle);
-        ParityBlk[i].setText(valStrUnknown);*/
         ParityBlk[i].setGeometry(blk_x, blk_y, blk_w, blk_h);
         //标签
         setLabProp(&(ParityLab[i]), ui->wgtPrLab, parityStyle,
                    Qt::AlignHCenter|Qt::AlignVCenter,"P" + QString::number(i+1));
-        /*
-        ParityLab[i].setParent(ui->wgtPrLab);
-        ParityLab[i].setStyleSheet(parityStyle);
-        ParityLab[i].setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-        ParityLab[i].setText("P" + QString::number(i+1));*/
         ParityLab[i].setGeometry(blk_x, lab_y, blk_w, lab_h);
         //更新坐标
         blk_x += blk_w + delta_w;
@@ -214,19 +199,10 @@ void HCodeGen::InitMembers()
         for(int j = 0; j < OPRD_MAX+2; j++){
             //数据块
             setPbtnProp(&(PrRowBlks[i][j]), wgtPrBlk[i], unknownStyle, valStrUnknown);
-            /*
-            PrRowBlks[i][j].setParent(wgtPrBlk[i]);
-            PrRowBlks[i][j].setStyleSheet(unknownStyle);
-            PrRowBlks[i][j].setText(valStrUnknown);*/
             PrRowBlks[i][j].setGeometry(blk_x, blk_y, blk_w, blk_h);
             //标签
             setLabProp(&(PrRowLabs[i][j]), wgtPrLab[i], labStyle,
                        Qt::AlignHCenter|Qt::AlignVCenter,"H?");
-            /*
-            PrRowLabs[i][j].setParent(wgtPrLab[i]);
-            PrRowLabs[i][j].setStyleSheet(labStyle);
-            PrRowLabs[i][j].setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-            PrRowLabs[i][j].setText("H?");*/
             PrRowLabs[i][j].setGeometry(blk_x, lab_y, blk_w, lab_h);
             //更新坐标
             blk_x += blk_w + delta_w;
@@ -238,19 +214,15 @@ void HCodeGen::InitMembers()
         blk_x = ofs_x + blk_w;
         for(int j = 0; j < OPTR_MAX+1; j++){
             //数据块
-            PrRowOptrBlks[i][j].setParent(wgtPrBlk[i]);
-            PrRowOptrBlks[i][j].setStyleSheet(labStyle0);
-            PrRowOptrBlks[i][j].setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-            PrRowOptrBlks[i][j].setGeometry(blk_x, blk_y, delta_w, blk_h);
+            setLabProp(&(PrRowOptrBlkLabs[i][j]), wgtPrBlk[i], labStyle0,
+                       Qt::AlignHCenter|Qt::AlignVCenter, "+");
+            PrRowOptrBlkLabs[i][j].setGeometry(blk_x, blk_y, delta_w, blk_h);
             //标签
-            PrRowOptrLabs[i][j].setParent(wgtPrLab[i]);
-            PrRowOptrLabs[i][j].setStyleSheet(labStyle0);
-            PrRowOptrLabs[i][j].setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+            setLabProp(&(PrRowOptrLabs[i][j]), wgtPrLab[i], labStyle0,
+                       Qt::AlignHCenter|Qt::AlignVCenter, "+");
             PrRowOptrLabs[i][j].setGeometry(blk_x, lab_y, delta_w, lab_h);
             //更新坐标
             blk_x += blk_w + delta_w;
-            PrRowOptrBlks[i][j].setText("+");
-            PrRowOptrLabs[i][j].setText("+");
         }
     }
     //设置可见性
@@ -443,12 +415,12 @@ void HCodeGen::setBlkVis(int data_bits)
             PrRowLabs[i][j].setText("H"+QString::number(PrHnos[i][j+1]));
             PrRowLabs[i][j].setStyleSheet(dataStyle);
             //设置操作符
-            PrRowOptrBlks[i][j].setVisible(true);
+            PrRowOptrBlkLabs[i][j].setVisible(true);
             PrRowOptrLabs[i][j].setVisible(true);
-            PrRowOptrBlks[i][j].setText("+");
+            PrRowOptrBlkLabs[i][j].setText("+");
             PrRowOptrLabs[i][j].setText("+");
         }
-        PrRowOptrBlks[i][hlen-1].setText("=");
+        PrRowOptrBlkLabs[i][hlen-1].setText("=");
         PrRowOptrLabs[i][hlen-1].setText("=");
         //显示结果块
         PrRowBlks[i][hlen].setVisible(true);
@@ -457,7 +429,7 @@ void HCodeGen::setBlkVis(int data_bits)
         PrRowLabs[i][hlen].setStyleSheet(parityStyle);
         //隐藏多余块
         for(int j = hlen; j < OPTR_MAX+1; j++){
-            PrRowOptrBlks[i][j].setVisible(false);  //操作符(数据块区)
+            PrRowOptrBlkLabs[i][j].setVisible(false);  //操作符(数据块区)
             PrRowOptrLabs[i][j].setVisible(false);  //操作符(标签区)
         }
         for(int j = hlen+1; j < OPRD_MAX+2; j++){
@@ -828,9 +800,9 @@ void HCodeGen::setCheckStatusInit()
         PrRowLabs[i][0].setStyleSheet(parityStyle);
         //操作符
         PrRowOptrLabs[i][hlen-1].setText("+");
-        PrRowOptrBlks[i][hlen-1].setText("+");
-        PrRowOptrBlks[i][hlen].setText("=");
-        PrRowOptrBlks[i][hlen].setVisible(true);
+        PrRowOptrBlkLabs[i][hlen-1].setText("+");
+        PrRowOptrBlkLabs[i][hlen].setText("=");
+        PrRowOptrBlkLabs[i][hlen].setVisible(true);
         //结果
         PrRowBlks[i][hlen+1].setText("?");
         PrRowBlks[i][hlen+1].setStyleSheet(unknownStyle);

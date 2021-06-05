@@ -162,7 +162,7 @@ p, li { white-space: pre-wrap; }
           </font>
          </property>
          <property name="text">
-          <string>海明距离</string>
+          <string>码距</string>
          </property>
         </widget>
        </item>
