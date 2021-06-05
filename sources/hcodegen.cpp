@@ -75,6 +75,8 @@ void HCodeGen::InitMembers()
     //样式初始化
     InitStyles();
     QString labStyle = "background:#F4F4F4";
+    rowChanged = -1;
+    hammGenFlag = 0;
     //单步动画状态
     stepStatus = INIT_STATUS;
     speedLevel = 1;      //动画原速播放
@@ -257,6 +259,10 @@ void HCodeGen::InitMembers()
         data_bits = 4;
     setBlkVis(data_bits);
 
+    //表格对应行高亮显示
+    QString valStr = ui->lnDataCode->text();
+    rowChanged = converter.bstring2int(valStr.toStdString());
+    changeCodeRowStyle(rowChanged, STYLE_HLIGHT);
 }
 
 //关联信号与槽
@@ -279,6 +285,7 @@ void HCodeGen::InitConnections()
         setBlkVis(dataBits);
         setStepInit();
         setCheckBtnsEnabled(true);
+        hammGenFlag = 0;
     });
     connect(this, SIGNAL(moveFinished()), this, SLOT(setStepFinishStatus()));   //设置动画结束状态
     //一次性生成海明码
@@ -311,10 +318,13 @@ void HCodeGen::InitConnections()
         for(int i = 0; i < hamm_bits; i++){
             CodeBlk[CODE_IN][i].setEnabled(true);
         }
+        if(hammGenFlag)
+            ui->pbtnFillCodeIn->setEnabled(true);
     });
     //一次性得出结果
     connect(ui->pbtnCheckFinal, &QPushButton::clicked, [=](){
         genAllCheck();
+        updateCheckRow();
     });
 }
 
@@ -335,7 +345,7 @@ void HCodeGen::InitStyles()
 
 //设置可见性
 void HCodeGen::setBlkVis(int data_bits)
-{
+{    
     //单步动画恢复初始状态
     setStepInit();
     //限制信息码输入框只能输指定长度的0/1串
@@ -394,9 +404,13 @@ void HCodeGen::setBlkVis(int data_bits)
 
         CodeBlk[CODE_IN][i].setVisible(true);
         setBlkStatus(&(CodeBlk[CODE_IN][i]), 0);
+
         CodeLab[CODE_IN][i].setVisible(true);
         HammLinkLab2[i].setVisible(true);
         CodeBlk[CODE_OUT][i].setVisible(true);
+        CodeBlk[CODE_OUT][i].setText("?");
+        CodeBlk[CODE_OUT][i].setStyleSheet(unknownStyle);
+
         CodeLab[CODE_OUT][i].setVisible(true);
     }
     for(int i = hamm_bits; i < HAMM_MAX; i++){
@@ -408,8 +422,6 @@ void HCodeGen::setBlkVis(int data_bits)
         CodeLab[CODE_IN][i].setVisible(false);
         HammLinkLab2[i].setVisible(false);
         CodeBlk[CODE_OUT][i].setVisible(false);
-        CodeBlk[CODE_OUT][i].setText("?");
-        CodeBlk[CODE_OUT][i].setStyleSheet(unknownStyle);
         CodeLab[CODE_OUT][i].setVisible(false);
     }
     //填充文本框
@@ -455,6 +467,15 @@ void HCodeGen::setBlkVis(int data_bits)
     }
     //更新合法编码表
     updateLegalCodeTable();
+
+    //从数据块获取数字串
+    valStr = getValStr(DataBlk, dataBits);
+    //取消之前的编码高亮显示
+    if(rowChanged >= 0)
+        changeCodeRowStyle(rowChanged, STYLE_NORMAL);
+    //表格中对应的合法编码高亮显示
+    rowChanged = converter.bstring2int(valStr.toStdString());
+    changeCodeRowStyle(rowChanged, STYLE_HLIGHT);
 }
 
 //设置按钮属性
@@ -520,11 +541,63 @@ void HCodeGen::updateLegalCodeTable()
     }
 }
 
+//改变行样式
+void HCodeGen::changeCodeRowStyle(int row, int choice)
+{
+    QColor colorD = "#FFCCCC", colorP = "#CCCCFF", colorOK = "#CCFFCC";
+    QTableWidget *pTbl = ui->tblLegalCode;
+    int row_n = pTbl->rowCount();
+    if(row < 0 || row >= row_n)
+        return;
+    int col_n = pTbl->columnCount();
+    int hamm_bits = dataBits + parityBits;
+    if(hamm_bits > col_n)
+        return;
+    for(int i = 0; i < hamm_bits; i++){
+        if(choice == STYLE_NORMAL){
+            if(HammLink[i] > 0)
+                pTbl->item(row, i)->setBackground(colorD);
+            else
+                pTbl->item(row, i)->setBackground(colorP);
+        }
+        else if(choice == STYLE_HLIGHT){
+            pTbl->item(row, i)->setBackground(colorOK);
+        }
+    }
+}
+
+//更新纠错后的编码对应的行
+void HCodeGen::updateCheckRow()
+{
+    int hamm_bits = dataBits + parityBits;
+    QString dataStr;
+    for(int i = 0; i < hamm_bits; i++){
+        if(HammLink[i] > 0)
+            dataStr = dataStr + CodeBlk[CODE_OUT][i].text();
+    }
+    HammingBack converter;
+    //取消之前的编码高亮显示
+    if(rowChanged >= 0)
+        changeCodeRowStyle(rowChanged, STYLE_NORMAL);
+    //表格中对应的合法编码高亮显示
+    rowChanged =  converter.bstring2int(dataStr.toStdString());
+    changeCodeRowStyle(rowChanged, STYLE_HLIGHT);
+
+}
+
 //更新信息码框，根据数据块补全输入框的数据位数
 void HCodeGen::updateDataCode()
 {
     //从数据块获取数字串
     QString valStr = getValStr(DataBlk, dataBits);
+    //取消之前的编码高亮显示
+    HammingBack converter;
+    if(rowChanged >= 0)
+        changeCodeRowStyle(rowChanged, STYLE_NORMAL);
+    //表格中对应的合法编码高亮显示
+    rowChanged = converter.bstring2int(valStr.toStdString());
+    changeCodeRowStyle(rowChanged, STYLE_HLIGHT);
+
     //为防止信息码框变化带动数据块变化，暂时解除连接
     disconnect(ui->lnDataCode, SIGNAL(textChanged(const QString &)), this, SLOT(updateDataBlk(const QString &)));   //解除连接
     ui->lnDataCode->setText(valStr);    //设置信息码框
@@ -614,6 +687,7 @@ void HCodeGen::setBlkUnknown()
 //设置单步动画初始状态
 void HCodeGen::setStepInit()
 {
+    hammGenFlag = 0;
     stepStatusStr = cvtStr2LocalQStr("海明码生成\n(单步动画)");
     setStepFinishStatus();
     stepStatus = INIT_STATUS;
@@ -694,8 +768,10 @@ void HCodeGen::updateStepStatus()
         int index = stepStatus - lastParityStatus;
         stepStatusStr = cvtStr2LocalQStr("单步生成\n结束");
         moveParityrBlk(index-1);
+        hammGenFlag = 1;
     }
     else if(stepStatus > 0){
+        hammGenFlag = 0;
         stepStatusStr = cvtStr2LocalQStr("单步生成\n结束");
         setStepInit();      //恢复初始状态
         setCheckBtnsEnabled(true);      //启用按钮
@@ -822,7 +898,7 @@ void HCodeGen::updateCheckStep()
                     QString::number(errbit) + cvtStr2LocalQStr("出错\n纠错");
         }
         else {
-            stepStatusStr = cvtStr2LocalQStr("单步校验\n无错");
+            stepStatusStr = cvtStr2LocalQStr("单步校验\n无错！");
         }
         for(int i = 0; i < hamm_bits; i++){
             if(i == errbit - 1)
@@ -853,7 +929,10 @@ void HCodeGen::updateCheckStep()
             CodeBlk[CODE_OUT][i].setText(text);
         }
         ui->lnCodeOut->setText(valStr);
+        updateCheckRow();
         setCheckStepFinish();
+        if(hammGenFlag)
+            ui->pbtnFillCodeIn->setEnabled(true);
     }
     else {
         checkStatus = INIT_STATUS;
@@ -935,7 +1014,7 @@ void HCodeGen::genAllCheck()
         stepStatusStr = cvtStr2LocalQStr("单步校验\n纠错");
     }
     else {
-        stepStatusStr = cvtStr2LocalQStr("单步校验\n无错");
+        stepStatusStr = cvtStr2LocalQStr("单步校验\n没有错误！");
     }
     for(int i = 0; i < hamm_bits; i++){
         if(i == errbit - 1)
@@ -963,6 +1042,9 @@ void HCodeGen::genAllCheck()
         CodeBlk[CODE_OUT][i].setText(text);
     }
     ui->lnCodeOut->setText(valStr);
+
+    if(hammGenFlag)
+        ui->pbtnFillCodeIn->setEnabled(true);
 }
 
 //一次性生成海明码
@@ -1007,6 +1089,7 @@ void HCodeGen::genAllBlk()
     }
     //允许用海明码填充待校验数据
     ui->pbtnFillCodeIn->setEnabled(true);
+    hammGenFlag = 1;
 }
 
 //设置数据块状态
@@ -1068,6 +1151,7 @@ void HCodeGen::flipDataBlk(QPushButton *pbtns, int dno)
 //更新信息码数据块
 void HCodeGen::updateDataBlk(const QString &dataStr)
 {
+    //更新数据块
     int len = dataStr.length();
     for(int i = 0; i < len; i++){
         if(dataStr[i] == '0'){   //顺序判断
@@ -1079,6 +1163,18 @@ void HCodeGen::updateDataBlk(const QString &dataStr)
             DataBlk[i].setText("1");
         }
     }
+    //计算新数据串
+    QString valStr = dataStr;
+    for(int i = len; i < dataBits; i++){
+        valStr = valStr + DataBlk[i].text();
+    }
+    //取消之前的编码高亮显示
+    HammingBack converter;
+    if(rowChanged >= 0)
+        changeCodeRowStyle(rowChanged, STYLE_NORMAL);
+    //表格中对应的合法编码高亮显示
+    rowChanged = converter.bstring2int(valStr.toStdString());
+    changeCodeRowStyle(rowChanged, STYLE_HLIGHT);
 }
 
 //移动信息码数据块

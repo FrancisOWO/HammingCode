@@ -17,6 +17,9 @@
 #define CODE_IN     0
 #define CODE_OUT    1
 
+#define STYLE_NORMAL    0
+#define STYLE_HLIGHT    1
+
 #define INIT_STATUS -1
 
 namespace Ui {
@@ -41,6 +44,8 @@ private:
     int PrHnos[PARITY_MAX][OPRD_MAX+1];     //校验位对应的所有海明码位标号
     int PrHnoLen[PARITY_MAX];   //校验位对应的海明码位个数
 
+    int hammGenFlag;        //海明码生成标志
+    int rowChanged;         //表格中高亮的行标号
     int speedLevel;         //动画速度
     int stepStatus;         //计算海明码单步动画状态
     int checkStatus;        //纠错检错单步动画状态
@@ -115,11 +120,13 @@ private slots:
     void updateCheckStep();     //检错纠错单步动画状态
     void setCheckStepFinish();  //动画结束
 
-    void genCheckBlk(int pno);  //数据校验
+    void genCheckBlk(int pno);      //数据校验
     void getCheckResult(int pno);   //校验结果
-    void genAllCheck();         //一次性生成校验结果
+    void genAllCheck();             //一次性生成校验结果
+    void updateCheckRow();          //更新纠错后的编码对应的行
 
-    void updateLegalCodeTable();  //填充合法编码表
+    void updateLegalCodeTable();    //填充合法编码表
+    void changeCodeRowStyle(int row, int choice);   //改变行样式
 
 signals:
     void moveFinished();
