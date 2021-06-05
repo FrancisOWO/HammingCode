@@ -13,8 +13,8 @@ struct HammingResult {
 class HammingBack {
 
 public:
-	//传入一个10进制数，传出高比特在前的string,string长度为VALUE_SIZE
-	std::string int2bstring(int num);
+    //传入一个10进制数，传出高比特在前的string，string长度为VALUE_SIZE
+    std::string int2bstring(int num, int size = VALUE_SIZE);
 
 	//传入一个高比特在前的二进制string，传出10进制数
 	int bstring2int(std::string num);

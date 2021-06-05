@@ -6,6 +6,7 @@
 #include <QValidator>
 #include <QRegExp>
 #include <QSequentialAnimationGroup>
+#include <QStringList>
 #include <QDebug>
 
 //编码转换
@@ -66,23 +67,6 @@ HCodeGen::HCodeGen(SubWindow *parent) :
 HCodeGen::~HCodeGen()
 {
     delete ui;
-}
-
-//设置按钮属性
-void HCodeGen::setPbtnProp(QPushButton *pbtn, QWidget *parent, QString style, QString text)
-{
-    pbtn->setParent(parent);
-    pbtn->setStyleSheet(style);
-    pbtn->setText(text);
-}
-
-//设置标签属性
-void HCodeGen::setLabProp(QLabel *lab, QWidget *parent, QString style, Qt::Alignment align, QString text)
-{
-    lab->setParent(parent);
-    lab->setStyleSheet(style);
-    lab->setAlignment(align);
-    lab->setText(text);
 }
 
 //初始化数据成员
@@ -321,6 +305,191 @@ void HCodeGen::InitStyles()
     moveStyle = "background:#FFCCCC;border:1px solid grey";     //移动
 }
 
+//设置可见性
+void HCodeGen::setBlkVis(int data_bits)
+{
+    //单步动画恢复初始状态
+    setStepInit();
+    //限制信息码输入框只能输指定长度的0/1串
+    dataBits = data_bits;
+    QString rgx0 = QString("^[0-1]{%1}$").arg(data_bits);
+    QValidator *vdt = new QRegExpValidator(QRegExp(rgx0));
+    ui->lnDataCode->setValidator(vdt);
+    //信息码
+    QString valStr, valStr0 = "0", valUnknown = "?";
+    for(int i = 0; i < data_bits; i++){
+        valStr = valStr + valStr0;
+        DataBlk[i].setVisible(true);
+        DataLab[i].setVisible(true);
+    }
+    for(int i = data_bits; i < DATA_MAX; i++){
+        DataBlk[i].setVisible(false);
+        DataLab[i].setVisible(false);
+    }
+    ui->lnDataCode->setText(valStr);
+
+    //校验码
+    HammingBack converter;
+    parityBits = converter.calCheckLen(data_bits);     //校验码位数
+    valStr = "";
+    for(int i = 0; i < parityBits; i++){
+        valStr = valStr + valUnknown;
+        ParityBlk[i].setVisible(true);
+        ParityLab[i].setVisible(true);
+        PrRowHead[i]->setVisible(true);
+        wgtPrLab[i]->setVisible(true);
+        wgtPrBlk[i]->setVisible(true);
+    }
+    for(int i = parityBits; i < PARITY_MAX; i++){
+        ParityBlk[i].setVisible(false);
+        ParityLab[i].setVisible(false);
+        PrRowHead[i]->setVisible(false);
+        wgtPrLab[i]->setVisible(false);
+        wgtPrBlk[i]->setVisible(false);
+    }
+    //填充文本框
+    ui->lnPrBit->setText(QString::number(parityBits));
+    ui->lnPrCode->setText(valStr);
+
+    //海明码
+    int hamm_bits = data_bits + parityBits;
+    ui->lnCodeInBit->setText(QString::number(hamm_bits));
+    ui->lnCodeOutBit->setText(QString::number(hamm_bits));
+    valStr = "";
+    QString codeStr;
+    for(int i = 0; i < hamm_bits; i++){
+        valStr = valStr + valUnknown;
+        codeStr = codeStr + valStr0;
+        HammBlk[i].setVisible(true);
+        HammLab[i].setVisible(true);
+        HammLinkLab[i].setVisible(true);
+
+        CodeBlk[CODE_IN][i].setVisible(true);
+        setBlkStatus(&(CodeBlk[CODE_IN][i]), 0);
+        CodeLab[CODE_IN][i].setVisible(true);
+        HammLinkLab2[i].setVisible(true);
+        CodeBlk[CODE_OUT][i].setVisible(true);
+        CodeLab[CODE_OUT][i].setVisible(true);
+    }
+    for(int i = hamm_bits; i < HAMM_MAX; i++){
+        HammBlk[i].setVisible(false);
+        HammLab[i].setVisible(false);
+        HammLinkLab[i].setVisible(false);
+
+        CodeBlk[CODE_IN][i].setVisible(false);
+        CodeLab[CODE_IN][i].setVisible(false);
+        HammLinkLab2[i].setVisible(false);
+        CodeBlk[CODE_OUT][i].setVisible(false);
+        CodeLab[CODE_OUT][i].setVisible(false);
+    }
+    //填充文本框
+    ui->lnHammBit->setText(QString::number(hamm_bits));     //海明码位数
+    ui->lnHammCode->setText(valStr);
+    ui->lnCodeIn->setText(codeStr);
+    ui->lnCodeOut->setText(valStr);
+
+    //校验位
+    updatePrBitLab();       //更新校验位二进制标签
+    for(int i = 0; i < parityBits; i++){
+        //求出计算校验位所需的海明码位数
+        int hlen = converter.calChecHammlen(data_bits, i+1) - 1;
+        PrHnoLen[i] = hlen;
+        //显示操作数块
+        for(int j = 0; j < hlen; j++){
+            PrRowBlks[i][j].setVisible(true);   //数据块
+            PrRowLabs[i][j].setVisible(true);   //标签
+            PrRowLabs[i][j].setText("H"+QString::number(PrHnos[i][j+1]));
+            PrRowLabs[i][j].setStyleSheet(dataStyle);
+            //设置操作符
+            PrRowOptrBlks[i][j].setVisible(true);
+            PrRowOptrLabs[i][j].setVisible(true);
+            PrRowOptrBlks[i][j].setText("+");
+            PrRowOptrLabs[i][j].setText("+");
+        }
+        PrRowOptrBlks[i][hlen-1].setText("=");
+        PrRowOptrLabs[i][hlen-1].setText("=");
+        //显示结果块
+        PrRowBlks[i][hlen].setVisible(true);
+        PrRowLabs[i][hlen].setVisible(true);
+        PrRowLabs[i][hlen].setText("H"+QString::number(PrHnos[i][0]));
+        PrRowLabs[i][hlen].setStyleSheet(parityStyle);
+        //隐藏多余块
+        for(int j = hlen; j < OPTR_MAX; j++){
+            PrRowOptrBlks[i][j].setVisible(false);  //操作符(数据块区)
+            PrRowOptrLabs[i][j].setVisible(false);  //操作符(标签区)
+        }
+        for(int j = hlen+1; j < OPRD_MAX+1; j++){
+            PrRowBlks[i][j].setVisible(false);   //数据块
+            PrRowLabs[i][j].setVisible(false);   //标签
+        }
+    }
+    //更新合法编码表
+    updateLegalCodeTable();
+}
+
+//设置按钮属性
+void HCodeGen::setPbtnProp(QPushButton *pbtn, QWidget *parent, QString style, QString text)
+{
+    pbtn->setParent(parent);
+    pbtn->setStyleSheet(style);
+    pbtn->setText(text);
+}
+
+//设置标签属性
+void HCodeGen::setLabProp(QLabel *lab, QWidget *parent, QString style, Qt::Alignment align, QString text)
+{
+    lab->setParent(parent);
+    lab->setStyleSheet(style);
+    lab->setAlignment(align);
+    lab->setText(text);
+}
+
+//填充合法编码表
+void HCodeGen::updateLegalCodeTable()
+{
+    HammingBack converter;
+    int n = (1 << dataBits);
+    int hamm_bits = dataBits + parityBits;
+    //行列数
+    ui->tblLegalCode->setRowCount(n);
+    ui->tblLegalCode->setColumnCount(hamm_bits);
+    //列宽
+    int width = 51;
+    for(int i = 0; i < hamm_bits; i++)
+        ui->tblLegalCode->setColumnWidth(i, width);
+    //列标题
+    QStringList Hheader;
+    for(int i = 0; i < hamm_bits; i++)
+        Hheader << "H" + QString::number(i+1);
+    ui->tblLegalCode->setHorizontalHeaderLabels(Hheader);
+    QColor colorD = "#FFCCCC", colorP = "#CCCCFF";
+    for(int i = 0; i < hamm_bits; i++){
+        if(HammLink[i] > 0)
+            ui->tblLegalCode->horizontalHeaderItem(i)->setBackground(colorD);
+        else
+            ui->tblLegalCode->horizontalHeaderItem(i)->setBackground(colorP);
+    }
+    //行标题
+    QStringList Vheader;
+    for(int i = 0; i < n; i++)
+            Vheader << QString::number(i);
+    ui->tblLegalCode->setVerticalHeaderLabels(Vheader);
+    ui->tblLegalCode->verticalHeader()->setMinimumWidth(30);
+    //表格内容
+    for(int i = 0; i < n; i++){
+        std::string dataStr = converter.int2bstring(i, dataBits);
+        HammingResult result = converter.calHammingResult(dataStr);
+        for(int j = 0; j < hamm_bits; j++){
+            QString text = QString::number(result.fullRes[j]-'0');
+            ui->tblLegalCode->setItem(i, j, new QTableWidgetItem(text));
+            if(HammLink[j] > 0)
+                ui->tblLegalCode->item(i,j)->setBackground(colorD);
+            else
+                ui->tblLegalCode->item(i,j)->setBackground(colorP);
+        }
+    }
+}
+
 //更新信息码框，根据数据块补全输入框的数据位数
 void HCodeGen::updateDataCode()
 {
@@ -549,141 +718,24 @@ void HCodeGen::genAllBlk()
     ui->pbtnFillCodeIn->setEnabled(true);
 }
 
-//设置可见性
-void HCodeGen::setBlkVis(int data_bits)
-{
-    //单步动画恢复初始状态
-    setStepInit();
-    //限制信息码输入框只能输指定长度的0/1串
-    dataBits = data_bits;
-    QString rgx0 = QString("^[0-1]{%1}$").arg(data_bits);
-    QValidator *vdt = new QRegExpValidator(QRegExp(rgx0));
-    ui->lnDataCode->setValidator(vdt);
-    //信息码
-    QString valStr, valStr0 = "0", valUnknown = "?";
-    for(int i = 0; i < data_bits; i++){
-        valStr = valStr + valStr0;
-        DataBlk[i].setVisible(true);
-        DataLab[i].setVisible(true);
-    }
-    for(int i = data_bits; i < DATA_MAX; i++){
-        DataBlk[i].setVisible(false);
-        DataLab[i].setVisible(false);
-    }
-    ui->lnDataCode->setText(valStr);
-
-    //校验码
-    HammingBack converter;
-    parityBits = converter.calCheckLen(data_bits);     //校验码位数
-    valStr = "";
-    for(int i = 0; i < parityBits; i++){
-        valStr = valStr + valUnknown;
-        ParityBlk[i].setVisible(true);
-        ParityLab[i].setVisible(true);
-        PrRowHead[i]->setVisible(true);
-        wgtPrLab[i]->setVisible(true);
-        wgtPrBlk[i]->setVisible(true);
-    }
-    for(int i = parityBits; i < PARITY_MAX; i++){
-        ParityBlk[i].setVisible(false);
-        ParityLab[i].setVisible(false);
-        PrRowHead[i]->setVisible(false);
-        wgtPrLab[i]->setVisible(false);
-        wgtPrBlk[i]->setVisible(false);
-    }
-    //填充文本框
-    ui->lnPrBit->setText(QString::number(parityBits));
-    ui->lnPrCode->setText(valStr);
-
-    //海明码
-    int hamm_bits = data_bits + parityBits;
-    ui->lnCodeInBit->setText(QString::number(hamm_bits));
-    ui->lnCodeOutBit->setText(QString::number(hamm_bits));
-    valStr = "";
-    QString codeStr;
-    for(int i = 0; i < hamm_bits; i++){
-        valStr = valStr + valUnknown;
-        codeStr = codeStr + valStr0;
-        HammBlk[i].setVisible(true);
-        HammLab[i].setVisible(true);
-        HammLinkLab[i].setVisible(true);
-
-        CodeBlk[CODE_IN][i].setVisible(true);
-        setBlkStatus(&(CodeBlk[CODE_IN][i]), 0);
-        CodeLab[CODE_IN][i].setVisible(true);
-        HammLinkLab2[i].setVisible(true);
-        CodeBlk[CODE_OUT][i].setVisible(true);
-        CodeLab[CODE_OUT][i].setVisible(true);
-    }
-    for(int i = hamm_bits; i < HAMM_MAX; i++){
-        HammBlk[i].setVisible(false);
-        HammLab[i].setVisible(false);
-        HammLinkLab[i].setVisible(false);
-
-        CodeBlk[CODE_IN][i].setVisible(false);
-        CodeLab[CODE_IN][i].setVisible(false);
-        HammLinkLab2[i].setVisible(false);
-        CodeBlk[CODE_OUT][i].setVisible(false);
-        CodeLab[CODE_OUT][i].setVisible(false);
-    }
-    //填充文本框
-    ui->lnHammBit->setText(QString::number(hamm_bits));     //海明码位数
-    ui->lnHammCode->setText(valStr);
-    ui->lnCodeIn->setText(codeStr);
-    ui->lnCodeOut->setText(valStr);
-
-    //校验位
-    updatePrBitLab();       //更新校验位二进制标签
-    for(int i = 0; i < parityBits; i++){
-        //求出计算校验位所需的海明码位数
-        int hlen = converter.calChecHammlen(data_bits, i+1) - 1;
-        PrHnoLen[i] = hlen;
-        //显示操作数块
-        for(int j = 0; j < hlen; j++){
-            PrRowBlks[i][j].setVisible(true);   //数据块
-            PrRowLabs[i][j].setVisible(true);   //标签
-            PrRowLabs[i][j].setText("H"+QString::number(PrHnos[i][j+1]));
-            PrRowLabs[i][j].setStyleSheet(dataStyle);
-            //设置操作符
-            PrRowOptrBlks[i][j].setVisible(true);
-            PrRowOptrLabs[i][j].setVisible(true);
-            PrRowOptrBlks[i][j].setText("+");
-            PrRowOptrLabs[i][j].setText("+");
-        }
-        PrRowOptrBlks[i][hlen-1].setText("=");
-        PrRowOptrLabs[i][hlen-1].setText("=");
-        //显示结果块
-        PrRowBlks[i][hlen].setVisible(true);
-        PrRowLabs[i][hlen].setVisible(true);
-        PrRowLabs[i][hlen].setText("H"+QString::number(PrHnos[i][0]));
-        PrRowLabs[i][hlen].setStyleSheet(parityStyle);
-        //隐藏多余块
-        for(int j = hlen; j < OPTR_MAX; j++){
-            PrRowOptrBlks[i][j].setVisible(false);  //操作符(数据块区)
-            PrRowOptrLabs[i][j].setVisible(false);  //操作符(标签区)
-        }
-        for(int j = hlen+1; j < OPRD_MAX+1; j++){
-            PrRowBlks[i][j].setVisible(false);   //数据块
-            PrRowLabs[i][j].setVisible(false);   //标签
-        }
-    }
-}
-
 //设置数据块状态
 void HCodeGen::setBlkStatus(QPushButton *pbtn, int status)
 {
     //按钮样式
-    QString style[2];
+    QString style[4];
     style[0] = pbtnStyle0 + hoverStyle + pressStyle;
     style[1] = pbtnStyle1 + hoverStyle + pressStyle;
-    pbtn->setStyleSheet(style[status]);
-    if(status == 0){
+    style[2] = pbtnStyle0;
+    style[3] = pbtnStyle1;
+    if(status >= 0 && status < 4)
+        pbtn->setStyleSheet(style[status]);
+    if(status == 0 || status == 2){
         pbtn->setText("0");
     }
-    else if(status == 1){
+    else if(status == 1 || status == 3){
         pbtn->setText("1");
     }
-    else{
+    else {
         pbtn->setText("?");
         pbtn->setStyleSheet(unknownStyle);
     }

@@ -106,8 +106,9 @@ private slots:
     void setStepInit();         //设置单步动画初始状态
     void updateStepStatus();    //更新单步动画状态
     void setStepFinishStatus(); //设置单步动画结束状态
+    void genAllBlk();           //一次性生成海明码
 
-    void genAllBlk();       //一次性生成海明码
+    void updateLegalCodeTable();  //填充合法编码表
 
 signals:
     void moveFinished();

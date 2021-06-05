@@ -1693,11 +1693,15 @@ p, li { white-space: pre-wrap; }
         </font>
        </property>
        <property name="title">
-        <string>合法码字</string>
+        <string>合法编码表</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
-         <widget class="QTableView" name="tblLegalCode"/>
+         <widget class="QTableWidget" name="tblLegalCode">
+          <property name="styleSheet">
+           <string notr="true">border:.5px solid #D8D8D8</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

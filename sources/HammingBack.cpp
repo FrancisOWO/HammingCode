@@ -4,13 +4,13 @@
 #include "HammingBack.h"
 using namespace std;
 
-//传入一个10进制数，传出高比特在前的string,string长度为VALUE_SIZE
-string HammingBack::int2bstring(int num)
+//传入一个10进制数，传出高比特在前的string，string长度为VALUE_SIZE
+string HammingBack::int2bstring(int num, int size)
 {
     //只取数据的低8位，将低8位逆序装入res
     string res;
-    for (int i = 0; i < VALUE_SIZE; i++)
-		res.push_back(!!(num & (0x1 << (VALUE_SIZE - 1 - i))) + '0');
+    for (int i = 0; i < size; i++)
+        res.push_back(!!(num & (0x1 << (size - 1 - i))) + '0');
 
 	return res;
 }
