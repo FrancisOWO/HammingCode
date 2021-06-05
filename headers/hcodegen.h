@@ -85,7 +85,8 @@ private:
 
     void updateDataCode();  //更新信息码框
     void updatePrBitLab();  //更新校验位二进制标签
-    void setBtnsEnabled(bool flag);     //设置按钮启用/禁用
+    void setGenBtnsEnabled(bool flag);      //启用/禁用按钮组（生成海明码按钮组）
+    void setCheckBtnsEnabled(bool flag);    //启用/禁用按钮组（检错纠错按钮组）
 
     void setCheckStatusInit();
 
@@ -112,7 +113,7 @@ private slots:
     void genAllBlk();           //一次性生成海明码
 
     void updateCheckStep();     //检错纠错单步动画状态
-    void setCheckStepFinish();   //动画结束
+    void setCheckStepFinish();  //动画结束
 
     void genCheckBlk(int pno);  //数据校验
     void getCheckResult(int pno);   //校验结果

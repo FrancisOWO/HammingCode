@@ -1089,7 +1089,7 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="text">
          <string>计算海明码
-重新开始</string>
+状态还原</string>
         </property>
        </widget>
        <widget class="QPushButton" name="pbtnSpeed">
@@ -1173,7 +1173,7 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="text">
          <string>检错纠错
-重新开始</string>
+状态还原</string>
         </property>
        </widget>
       </widget>

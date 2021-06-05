@@ -274,9 +274,13 @@ void HCodeGen::InitConnections()
     //动画速度
     connect(ui->pbtnSpeed, SIGNAL(clicked()), this, SLOT(changeSpeed()));
     //单步动画
-    connect(ui->pbtnHamRestart, SIGNAL(clicked()), this, SLOT(setStepInit()));      //重新开始
     connect(ui->pbtnHamStep, SIGNAL(clicked()), this, SLOT(updateStepStatus()));    //下一步动画
-    connect(this, SIGNAL(moveFinished()), this, SLOT(setStepFinishStatus()));       //设置动画结束状态
+    connect(ui->pbtnHamRestart, &QPushButton::clicked, [=](){       //状态还原
+        setBlkVis(dataBits);
+        setStepInit();
+        setCheckBtnsEnabled(true);
+    });
+    connect(this, SIGNAL(moveFinished()), this, SLOT(setStepFinishStatus()));   //设置动画结束状态
     //一次性生成海明码
     connect(ui->pbtnHamFinal, SIGNAL(clicked()), this, SLOT(genAllBlk()));
     //用海明码填充待校验数据
@@ -291,11 +295,22 @@ void HCodeGen::InitConnections()
     });
     //检错纠错单步动画
     connect(ui->pbtnCheckStep, SIGNAL(clicked()), this, SLOT(updateCheckStep()));
+    //状态还原
     connect(ui->pbtnCheckRestart, &QPushButton::clicked, [=](){
         checkStatus = INIT_STATUS;
         stepStatusStr = cvtStr2LocalQStr("检错纠错\n(单步动画)");
         setCheckStepFinish();
         setCheckStatusInit();
+        setGenBtnsEnabled(true);
+        int hamm_bits = dataBits + parityBits;
+        ui->spinDataBit->setEnabled(true);
+        ui->lnDataCode->setReadOnly(false);
+        for(int i = 0; i < dataBits; i++){
+            DataBlk[i].setEnabled(true);
+        }
+        for(int i = 0; i < hamm_bits; i++){
+            CodeBlk[CODE_IN][i].setEnabled(true);
+        }
     });
     //一次性得出结果
     connect(ui->pbtnCheckFinal, &QPushButton::clicked, [=](){
@@ -393,6 +408,8 @@ void HCodeGen::setBlkVis(int data_bits)
         CodeLab[CODE_IN][i].setVisible(false);
         HammLinkLab2[i].setVisible(false);
         CodeBlk[CODE_OUT][i].setVisible(false);
+        CodeBlk[CODE_OUT][i].setText("?");
+        CodeBlk[CODE_OUT][i].setStyleSheet(unknownStyle);
         CodeLab[CODE_OUT][i].setVisible(false);
     }
     //填充文本框
@@ -534,13 +551,20 @@ void HCodeGen::updatePrBitLab()
 
 }
 
-//设置按钮启用/禁用
-void HCodeGen::setBtnsEnabled(bool flag)
+//启用/禁用按钮组（生成海明码按钮组）
+void HCodeGen::setGenBtnsEnabled(bool flag)
 {
     ui->pbtnHamFinal->setEnabled(flag);     //一次性生成海明码
     ui->pbtnHamStep->setEnabled(flag);      //单步动画
     ui->pbtnHamRestart->setEnabled(flag);   //重新开始
-    ui->pbtnSpeed->setEnabled(flag);        //调整速度
+}
+
+//启用/禁用按钮组（检错纠错按钮组）
+void HCodeGen::setCheckBtnsEnabled(bool flag)
+{
+    ui->pbtnCheckStep->setEnabled(flag);     //一次性检错纠错
+    ui->pbtnCheckFinal->setEnabled(flag);    //单步动画
+    ui->pbtnCheckRestart->setEnabled(flag);  //重新开始
 }
 
 //改变动画播放速度
@@ -595,10 +619,13 @@ void HCodeGen::setStepInit()
     stepStatus = INIT_STATUS;
     ui->pbtnFillCodeIn->setEnabled(false);  //禁止用海明码填充待校验数据
     //允许输入
-    ui->spinDataBit->setReadOnly(false);    //数字框可修改
+    ui->spinDataBit->setEnabled(true);      //数字框可修改
     ui->lnDataCode->setReadOnly(false);     //输入框可修改
     for(int i = 0; i < dataBits; i++)       //数据块可改变
         DataBlk[i].setEnabled(true);
+    int hamm_bits = dataBits + parityBits;
+    for(int i = 0; i < hamm_bits; i++)      //数据块可改变
+        CodeBlk[CODE_IN][i].setEnabled(true);
     //恢复信息码数据块状态
     QString valStr = getValStr(DataBlk, dataBits);
     updateDataBlk(valStr);
@@ -610,19 +637,26 @@ void HCodeGen::setStepInit()
 //更新单步动画状态
 void HCodeGen::updateStepStatus()
 {
-    setBtnsEnabled(false);  //禁用按钮
+    setGenBtnsEnabled(false);  //禁用按钮
+    ui->pbtnSpeed->setEnabled(false);
     stepStatus++;
-    int lastParityStatus = dataBits + parityBits;
+    int hamm_bits = dataBits + parityBits;
+    int lastParityStatus = hamm_bits;
     int finalStatus = lastParityStatus + parityBits;
     if(stepStatus == 0){
+        setBlkVis(dataBits);
         stepStatusStr = cvtStr2LocalQStr("单步生成\n填入D1");
         updateDataCode();   //更新信息码框
         setBlkUnknown();    //设置未知块
+        setCheckBtnsEnabled(false);         //禁用按钮
+        ui->pbtnFillCodeIn->setEnabled(false);
         //禁用输入
-        ui->spinDataBit->setReadOnly(true); //数字框不可修改
+        ui->spinDataBit->setEnabled(false); //数字框不可修改
         ui->lnDataCode->setReadOnly(true);  //输入框不可修改
         for(int i = 0; i < dataBits; i++)   //数据块不可改变
             DataBlk[i].setEnabled(false);
+        for(int i = 0; i < hamm_bits; i++)  //数据块不可改变
+            CodeBlk[CODE_IN][i].setEnabled(false);
         setStepFinishStatus();
         //计算海明码
         HammingBack converter;
@@ -660,6 +694,9 @@ void HCodeGen::updateStepStatus()
     else if(stepStatus > 0){
         stepStatusStr = cvtStr2LocalQStr("单步生成\n结束");
         setStepInit();      //恢复初始状态
+        setCheckBtnsEnabled(true);      //启用按钮
+        for(int i = 0; i < hamm_bits; i++)  //数据块可改变
+            CodeBlk[CODE_IN][i].setEnabled(true);
     }
 }
 
@@ -667,7 +704,8 @@ void HCodeGen::updateStepStatus()
 void HCodeGen::setStepFinishStatus()
 {
     ui->pbtnHamStep->setText(stepStatusStr);    //更新按钮文字
-    setBtnsEnabled(true);   //启用按钮
+    setGenBtnsEnabled(true);            //启用按钮
+    ui->pbtnSpeed->setEnabled(true);
     //设置下一步的界面
     int lastParityStatus = dataBits + parityBits;
     int finalStatus = lastParityStatus + parityBits;
@@ -689,14 +727,14 @@ void HCodeGen::setStepFinishStatus()
     }
     else if(stepStatus == finalStatus){
         //允许用海明码填充待校验数据
-        ui->pbtnFillCodeIn->setEnabled(true);
+        ui->pbtnFillCodeIn->setEnabled(true);        
     }
 
 }
 
 //检错纠错动画初始化
 void HCodeGen::setCheckStatusInit()
-{
+{    
     for(int i = 0; i < parityBits; i++){
         int hlen = PrHnoLen[i];
         //标签
@@ -721,6 +759,9 @@ void HCodeGen::setCheckStatusInit()
     int hamm_bits = dataBits + parityBits;
     QString valStr;
     for(int i = 0; i < hamm_bits; i++){
+        int status = (CodeBlk[CODE_IN][i].text() == "1");
+        setBlkStatus(&(CodeBlk[CODE_IN][i]), status);
+
         valStr = valStr + "?";
         CodeBlk[CODE_OUT][i].setText("?");
         CodeBlk[CODE_OUT][i].setStyleSheet(unknownStyle);
@@ -731,7 +772,9 @@ void HCodeGen::setCheckStatusInit()
 //检错纠错单步动画状态
 void HCodeGen::updateCheckStep()
 {
-    ui->pbtnCheckStep->setEnabled(false);
+    setCheckBtnsEnabled(false);         //禁用按钮
+    ui->pbtnSpeed->setEnabled(false);
+    ui->pbtnFillCodeIn->setEnabled(false);
     static int errbit = -1;
     int hamm_bits = dataBits + parityBits;
     QString okStyle = "background:#CCFFCC", errStyle = "background:#FFCCCC";
@@ -739,6 +782,17 @@ void HCodeGen::updateCheckStep()
     HammingBack converter;
     if(checkStatus == 0){
         stepStatusStr = cvtStr2LocalQStr("单步校验\n第1位");
+        setGenBtnsEnabled(false);
+        //禁用按钮/输入
+        ui->spinDataBit->setEnabled(false);
+        ui->lnDataCode->setReadOnly(true);
+        for(int i = 0; i < dataBits; i++){
+            DataBlk[i].setEnabled(false);
+        }
+        for(int i = 0; i < hamm_bits; i++){
+            CodeBlk[CODE_IN][i].setEnabled(false);
+        }
+
         setCheckStatusInit();
         setCheckStepFinish();
     }
@@ -760,7 +814,8 @@ void HCodeGen::updateCheckStep()
         errbit = converter.bstring2int(valStr.toStdString());
         if(errbit > 0){
             CodeBlk[CODE_IN][errbit-1].setStyleSheet(errStyle);
-            stepStatusStr = cvtStr2LocalQStr("单步校验\n纠错");
+            stepStatusStr = cvtStr2LocalQStr("单步校验\nH") +
+                    QString::number(errbit) + cvtStr2LocalQStr("出错\n纠错");
         }
         else {
             stepStatusStr = cvtStr2LocalQStr("单步校验\n无错");
@@ -801,20 +856,45 @@ void HCodeGen::updateCheckStep()
         stepStatusStr = cvtStr2LocalQStr("检错纠错\n(单步动画)");
         setCheckStatusInit();
         setCheckStepFinish();
+        setGenBtnsEnabled(true);
+        ui->spinDataBit->setEnabled(true);
+        ui->lnDataCode->setReadOnly(false);
+        for(int i = 0; i < dataBits; i++){
+            DataBlk[i].setEnabled(true);
+        }
+        for(int i = 0; i < hamm_bits; i++){
+            CodeBlk[CODE_IN][i].setEnabled(true);
+        }
     }
 }
 
 //检错纠错动画结束
 void HCodeGen::setCheckStepFinish()
 {
-    ui->pbtnCheckStep->setEnabled(true);
     ui->pbtnCheckStep->setText(stepStatusStr);
+    setCheckBtnsEnabled(true);         //启用按钮
+    ui->pbtnSpeed->setEnabled(true);
 }
 
 //一次性生成校验结果
 void HCodeGen::genAllCheck()
 {
-    setCheckStatusInit();   //单步动画还原
+    //状态还原
+    checkStatus = INIT_STATUS;
+    stepStatusStr = cvtStr2LocalQStr("检错纠错\n(单步动画)");
+    setCheckStepFinish();
+    setCheckStatusInit();
+    setGenBtnsEnabled(true);
+    int hamm_bits = dataBits + parityBits;
+    ui->spinDataBit->setEnabled(true);
+    ui->lnDataCode->setReadOnly(false);
+    for(int i = 0; i < dataBits; i++){
+        DataBlk[i].setEnabled(true);
+    }
+    for(int i = 0; i < hamm_bits; i++){
+        CodeBlk[CODE_IN][i].setEnabled(true);
+    }
+    //校验位区域的操作数
     QString startStyle, endStyle;
     for(int i = 0; i < parityBits; i++){
         int n = PrHnoLen[i] + 1;
@@ -839,7 +919,6 @@ void HCodeGen::genAllCheck()
     //******************待封装
     //检错
     QString okStyle = "background:#CCFFCC", errStyle = "background:#FFCCCC";
-    int hamm_bits = dataBits + parityBits;
     HammingBack converter;
     QString valStr;
     for(int i = 0; i < parityBits; i++){
@@ -879,13 +958,20 @@ void HCodeGen::genAllCheck()
         CodeBlk[CODE_OUT][i].setStyleSheet(okStyle);
         CodeBlk[CODE_OUT][i].setText(text);
     }
-
+    ui->lnCodeOut->setText(valStr);
 }
 
 //一次性生成海明码
 void HCodeGen::genAllBlk()
 {
+    //setBlkVis会把data值置全0，需重新赋值
+    QString text = ui->lnDataCode->text();
+    setBlkVis(dataBits);
+    ui->lnDataCode->setText(text);
+
     setStepInit();      //单步动画还原
+    setCheckBtnsEnabled(true);  //启用按钮
+
     HammingBack converter;
     //获取信息码，计算海明码
     ///输入框的数字串位数可能不足，应通过数据块获取信息码
@@ -1051,7 +1137,7 @@ void HCodeGen::genCheckBlk(int pno)
     QSequentialAnimationGroup *pSeqGrp = new QSequentialAnimationGroup;
     int n = PrHnoLen[pno] + 1;
     QPropertyAnimation **pMove = new QPropertyAnimation *[n];
-    int duration_ms = 800;
+    int duration_ms = 1200;
     //海明码区的信息位->校验位的操作数
     QString startStyle, endStyle;   //起点块/终点块样式
     moveStyle = dataStyle;     //移动样式

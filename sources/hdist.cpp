@@ -91,8 +91,12 @@ void HDist::updateIOBit(int val)
     ui->spinIn2->setValue(deftVal);
     //设置输入输出数据块
     QString deftValStr = QString::number(deftVal);
-    ui->labOut->setText(deftValStr);
     ui->labHDist->setText(deftValStr);
+    QString valStr0;
+    int bits = ui->spinBit->value();
+    for(int i = 0; i < bits; i++)
+        valStr0 = valStr0 + "0";
+    ui->labOut->setText(valStr0);
     for(int i = 0; i < val; i++){
         //默认值
         DataIn1[i].setText(deftValStr);
@@ -198,13 +202,13 @@ void HDist::flipBlockData(QPushButton *pbtn)
         setBlockStatus(pbtn, 0);
 }
 
-//更新输入1对应的数据块
+//更新【输入1】对应的数据块
 void HDist::updateBlockIn1(int val)
 {
     updateBlockData(DATA_IN1, val);
 }
 
-//更新输入2对应的数据块
+//更新【输入2】对应的数据块
 void HDist::updateBlockIn2(int val)
 {
     updateBlockData(DATA_IN2, val);
@@ -222,7 +226,7 @@ void HDist::updateDataOut()
     int dist = converter.calHammingDistance(din1, din2);
     QString doutBStr = QString::fromStdString(converter.int2bstring(dout));
 
-    ui->labOut->setText(QString::number(dout));
+    ui->labOut->setText(doutBStr);
     ui->labHDist->setText(QString::number(dist));
     int len = doutBStr.length();
     for(int i = 0; i < bits; i++){
