@@ -644,7 +644,11 @@ void HCodeGen::updateStepStatus()
     int lastParityStatus = hamm_bits;
     int finalStatus = lastParityStatus + parityBits;
     if(stepStatus == 0){
+        QString str = ui->lnDataCode->text();
         setBlkVis(dataBits);
+        ui->lnDataCode->setText(str);
+        stepStatus = 0;
+
         stepStatusStr = cvtStr2LocalQStr("单步生成\n填入D1");
         updateDataCode();   //更新信息码框
         setBlkUnknown();    //设置未知块
