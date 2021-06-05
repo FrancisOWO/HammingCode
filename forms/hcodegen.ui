@@ -1088,7 +1088,8 @@ p, li { white-space: pre-wrap; }
          <string notr="true">background:#F0F0F0</string>
         </property>
         <property name="text">
-         <string>重新开始</string>
+         <string>计算海明码
+重新开始</string>
         </property>
        </widget>
        <widget class="QPushButton" name="pbtnSpeed">
@@ -1156,6 +1157,23 @@ p, li { white-space: pre-wrap; }
         <property name="text">
          <string>检错纠错
 (单步动画)</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pbtnCheckRestart">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>710</y>
+          <width>101</width>
+          <height>81</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background:#F0F0F0</string>
+        </property>
+        <property name="text">
+         <string>检错纠错
+重新开始</string>
         </property>
        </widget>
       </widget>

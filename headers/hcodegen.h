@@ -42,7 +42,8 @@ private:
     int PrHnoLen[PARITY_MAX];   //校验位对应的海明码位个数
 
     int speedLevel;         //动画速度
-    int stepStatus;         //单步动画状态
+    int stepStatus;         //计算海明码单步动画状态
+    int checkStatus;        //纠错检错单步动画状态
     QString stepStatusStr;  //状态文字
     //按钮样式
     QString pbtnStyle0, pbtnStyle1, unknownStyle;
@@ -52,7 +53,7 @@ private:
     QPushButton HammBlk[HAMM_MAX];      //海明码
     QPushButton DataBlk[DATA_MAX];      //信息码
     QPushButton ParityBlk[PARITY_MAX];  //校验码
-    QPushButton PrRowBlks[PARITY_MAX][OPRD_MAX+1];  //操作数和结果
+    QPushButton PrRowBlks[PARITY_MAX][OPRD_MAX+2];  //操作数和结果
     QPushButton CodeBlk[2][HAMM_MAX];   //待校验数据/纠错后数据
 
     //数据块标签
@@ -61,9 +62,9 @@ private:
     QLabel DataLab[DATA_MAX];       //信息码
     QLabel ParityLab[PARITY_MAX];   //校验码
     QLabel *PrRowHead[PARITY_MAX];
-    QLabel PrRowLabs[PARITY_MAX][OPRD_MAX+1];   //操作数和结果
-    QLabel PrRowOptrLabs[PARITY_MAX][OPTR_MAX]; //操作符(标签区域)
-    QLabel PrRowOptrBlks[PARITY_MAX][OPTR_MAX]; //操作符(数据块区域)
+    QLabel PrRowLabs[PARITY_MAX][OPRD_MAX+2];     //操作数和结果
+    QLabel PrRowOptrLabs[PARITY_MAX][OPTR_MAX+1]; //操作符(标签区域)
+    QLabel PrRowOptrBlks[PARITY_MAX][OPTR_MAX+1]; //操作符(数据块区域)
     QLabel CodeLab[2][HAMM_MAX];
     QLabel HammLinkLab2[HAMM_MAX];
 
@@ -86,6 +87,8 @@ private:
     void updatePrBitLab();  //更新校验位二进制标签
     void setBtnsEnabled(bool flag);     //设置按钮启用/禁用
 
+    void setCheckStatusInit();
+
 private slots:
     void changeSpeed();     //改变动画播放速度
 
@@ -107,6 +110,13 @@ private slots:
     void updateStepStatus();    //更新单步动画状态
     void setStepFinishStatus(); //设置单步动画结束状态
     void genAllBlk();           //一次性生成海明码
+
+    void updateCheckStep();     //检错纠错单步动画状态
+    void setCheckStepFinish();   //动画结束
+
+    void genCheckBlk(int pno);  //数据校验
+    void getCheckResult(int pno);   //校验结果
+    void genAllCheck();         //一次性生成校验结果
 
     void updateLegalCodeTable();  //填充合法编码表
 
