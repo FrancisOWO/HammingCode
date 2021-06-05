@@ -14,6 +14,9 @@
 #define OPRD_MAX    (HAMM_MAX+1)/2
 #define OPTR_MAX    OPRD_MAX
 
+#define CODE_IN     0
+#define CODE_OUT    1
+
 #define INIT_STATUS -1
 
 namespace Ui {
@@ -35,7 +38,7 @@ private:
     int dataBits, parityBits;   //信息位数、校验位数
     int HammLink[HAMM_MAX];     //海明码对应的信息位/校验位
     int DataLink[DATA_MAX];     //信息位对应的海明码位
-    int PrHnos[PARITY_MAX][OPRD_MAX];   //校验位对应的所有海明码位标号
+    int PrHnos[PARITY_MAX][OPRD_MAX+1];     //校验位对应的所有海明码位标号
     int PrHnoLen[PARITY_MAX];   //校验位对应的海明码位个数
 
     int speedLevel;         //动画速度
@@ -46,25 +49,33 @@ private:
     QString hoverStyle, pressStyle, moveStyle;
     QString dataStyle, parityStyle;
     //数据块
-    QPushButton HammBlk[HAMM_MAX];
-    QPushButton DataBlk[DATA_MAX];
-    QPushButton ParityBlk[PARITY_MAX];
+    QPushButton HammBlk[HAMM_MAX];      //海明码
+    QPushButton DataBlk[DATA_MAX];      //信息码
+    QPushButton ParityBlk[PARITY_MAX];  //校验码
     QPushButton PrRowBlks[PARITY_MAX][OPRD_MAX+1];  //操作数和结果
+    QPushButton CodeBlk[2][HAMM_MAX];   //待校验数据/纠错后数据
+
     //数据块标签
-    QLabel HammLab[HAMM_MAX];
-    QLabel HammLinkLab[HAMM_MAX];
-    QLabel DataLab[DATA_MAX];
-    QLabel ParityLab[PARITY_MAX];
+    QLabel HammLab[HAMM_MAX];       //海明码
+    QLabel HammLinkLab[HAMM_MAX];   //海明码对应的信息位/校验位
+    QLabel DataLab[DATA_MAX];       //信息码
+    QLabel ParityLab[PARITY_MAX];   //校验码
     QLabel *PrRowHead[PARITY_MAX];
     QLabel PrRowLabs[PARITY_MAX][OPRD_MAX+1];   //操作数和结果
     QLabel PrRowOptrLabs[PARITY_MAX][OPTR_MAX]; //操作符(标签区域)
     QLabel PrRowOptrBlks[PARITY_MAX][OPTR_MAX]; //操作符(数据块区域)
+    QLabel CodeLab[2][HAMM_MAX];
+    QLabel HammLinkLab2[HAMM_MAX];
+
     QWidget *wgtPrBlk[PARITY_MAX];
     QWidget *wgtPrLab[PARITY_MAX];
 
     void InitMembers();     //初始化数据成员
     void InitConnections(); //关联信号与槽
     void InitStyles();      //初始化样式表
+
+    void setPbtnProp(QPushButton *pbtn, QWidget *parent, QString style, QString text);
+    void setLabProp(QLabel *lab, QWidget *parent, QString style, Qt::Alignment align, QString text);
 
     int cvtDno2Hno(int index);      //信息码下标->海明码下标
     int cvtPno2Hno(int index);      //校验码下标->海明码下标
@@ -86,7 +97,7 @@ private slots:
     void moveDataBlk(int dno);      //移动信息码块：信息码区->海明码区
     void updateDataBlk(const QString &dataStr);         //更新信息码块（信息码区）
     void setBlkStatus(QPushButton *pbtn, int status);   //设置数据块状态
-    void flipDataBlk(int dno);      //反转信息码块
+    void flipDataBlk(QPushButton *pbtns, int dno);      //反转信息码块
 
     void genPrBlk(int pno);         //计算校验位，生成校验位区数据块
     void movePrBlk(int pno);        //移动校验码块：校验位区->校验码区
