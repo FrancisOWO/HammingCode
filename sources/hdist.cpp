@@ -225,12 +225,13 @@ void HDist::updateDataOut()
     HammingBack converter;
     int dist = converter.calHammingDistance(din1, din2);
     QString doutBStr = QString::fromStdString(converter.int2bstring(dout));
+    int len = doutBStr.length();
+    doutBStr = doutBStr.mid(len-bits, bits);
 
     ui->labOut->setText(doutBStr);
     ui->labHDist->setText(QString::number(dist));
-    int len = doutBStr.length();
     for(int i = 0; i < bits; i++){
-        if(doutBStr[len-bits+i] == '0'){   //ÄæÐòÅÐ¶Ï
+        if(doutBStr[i] == '0'){     //Ë³ÐòÅÐ¶Ï
             DataOut[i].setStyleSheet(pbtnStyle0);
             DataOut[i].setText("0");
         }
