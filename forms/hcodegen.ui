@@ -56,8 +56,11 @@
        </property>
        <property name="font">
         <font>
-         <pointsize>11</pointsize>
+         <pointsize>-1</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font-size:15px</string>
        </property>
        <property name="title">
         <string>注意事项</string>
@@ -79,7 +82,7 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>11</pointsize>
+            <pointsize>-1</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -89,12 +92,12 @@
            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;先输入【信息码】的【位数】，&lt;span style=&quot; color:#ff0000;&quot;&gt;取值范围[3,5]&lt;/span&gt;。&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;再输入【信息码】，可在&lt;span style=&quot; color:#ff0000;&quot;&gt;输入二进制串&lt;/span&gt;，或&lt;span style=&quot; color:#ff0000;&quot;&gt;点击数据块&lt;/span&gt;改变某一位。&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;点击【最终结果】，可直接显示信息码对应的海明码。&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;点击【单步动画】，可显示生成海明码的过程，单步动画按钮上会显示&lt;span style=&quot; color:#ff0000;&quot;&gt;下一步的动作&lt;/span&gt;。&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;动画开始后，&lt;span style=&quot; color:#ff0000;&quot;&gt;输入不可修改&lt;/span&gt;。点击【重新开始】，即可返回初始状态。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:15px; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;先输入【信息码】的【位数】，&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;取值范围[3,5]&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;再输入【信息码】，可在&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;输入二进制串&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;，或&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;点击数据块&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;改变某一位。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;点击【最终结果】，可直接显示信息码对应的海明码。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;点击【单步动画】，可显示生成海明码的过程，单步动画按钮上会显示&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;下一步的动作&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;动画开始后，&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;输入不可修改&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;。点击【重新开始】，即可返回初始状态。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>
@@ -123,8 +126,11 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>11</pointsize>
+         <pointsize>-1</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font-size:15px</string>
        </property>
        <property name="title">
         <string>输入</string>
@@ -140,8 +146,11 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="font">
            <font>
-            <pointsize>11</pointsize>
+            <pointsize>-1</pointsize>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font-size:15px</string>
           </property>
           <property name="title">
            <string>信息码</string>
@@ -174,6 +183,9 @@ p, li { white-space: pre-wrap; }
                <height>30</height>
               </size>
              </property>
+             <property name="styleSheet">
+              <string notr="true">font-size:15px</string>
+             </property>
              <property name="text">
               <string>0000</string>
              </property>
@@ -199,7 +211,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">border:1px solid #C0C0C0</string>
+                <string notr="true">border:1px solid #C0C0C0;font-size:13px</string>
                </property>
               </widget>
              </item>
@@ -218,7 +230,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">border:1px solid #C0C0C0</string>
+                <string notr="true">border:1px solid #C0C0C0;font-size:15px</string>
                </property>
               </widget>
              </item>
@@ -228,6 +240,9 @@ p, li { white-space: pre-wrap; }
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
               <widget class="QLabel" name="label_8">
+               <property name="styleSheet">
+                <string notr="true">font-size:15px</string>
+               </property>
                <property name="text">
                 <string>位数：</string>
                </property>
@@ -235,6 +250,14 @@ p, li { white-space: pre-wrap; }
              </item>
              <item>
               <widget class="QSpinBox" name="spinDataBit">
+               <property name="font">
+                <font>
+                 <pointsize>-1</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">font-size:15px</string>
+               </property>
                <property name="minimum">
                 <number>3</number>
                </property>
@@ -283,8 +306,11 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>11</pointsize>
+         <pointsize>-1</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font-size:15px</string>
        </property>
        <property name="title">
         <string>输出</string>
@@ -312,8 +338,11 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="font">
            <font>
-            <pointsize>11</pointsize>
+            <pointsize>-1</pointsize>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font-size:15px</string>
           </property>
           <property name="title">
            <string>校验位</string>
@@ -354,7 +383,7 @@ p, li { white-space: pre-wrap; }
                   </size>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">border:1px solid #C0C0C0</string>
+                  <string notr="true">border:1px solid #C0C0C0;font-size:13px</string>
                  </property>
                 </widget>
                </item>
@@ -404,6 +433,9 @@ p, li { white-space: pre-wrap; }
                </item>
                <item row="0" column="0">
                 <widget class="QLabel" name="labP1Bit">
+                 <property name="styleSheet">
+                  <string notr="true">font-size:15px</string>
+                 </property>
                  <property name="text">
                   <string>xxx1</string>
                  </property>
@@ -431,7 +463,7 @@ p, li { white-space: pre-wrap; }
                   </size>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">border:1px solid #C0C0C0</string>
+                  <string notr="true">border:1px solid #C0C0C0;font-size:13px</string>
                  </property>
                 </widget>
                </item>
@@ -481,6 +513,9 @@ p, li { white-space: pre-wrap; }
                </item>
                <item row="0" column="0">
                 <widget class="QLabel" name="labP2Bit">
+                 <property name="styleSheet">
+                  <string notr="true">font-size:15px</string>
+                 </property>
                  <property name="text">
                   <string>xx1x</string>
                  </property>
@@ -508,7 +543,7 @@ p, li { white-space: pre-wrap; }
                   </size>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">border:1px solid #C0C0C0</string>
+                  <string notr="true">border:1px solid #C0C0C0;font-size:13px</string>
                  </property>
                 </widget>
                </item>
@@ -558,6 +593,9 @@ p, li { white-space: pre-wrap; }
                </item>
                <item row="0" column="0">
                 <widget class="QLabel" name="labP3Bit">
+                 <property name="styleSheet">
+                  <string notr="true">font-size:15px</string>
+                 </property>
                  <property name="text">
                   <string>x1xx</string>
                  </property>
@@ -585,7 +623,7 @@ p, li { white-space: pre-wrap; }
                   </size>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">border:1px solid #C0C0C0</string>
+                  <string notr="true">border:1px solid #C0C0C0;font-size:13px</string>
                  </property>
                 </widget>
                </item>
@@ -635,6 +673,9 @@ p, li { white-space: pre-wrap; }
                </item>
                <item row="0" column="0">
                 <widget class="QLabel" name="labP4Bit">
+                 <property name="styleSheet">
+                  <string notr="true">font-size:15px</string>
+                 </property>
                  <property name="text">
                   <string>1xxx</string>
                  </property>
@@ -660,8 +701,11 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="font">
            <font>
-            <pointsize>11</pointsize>
+            <pointsize>-1</pointsize>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font-size:15px</string>
           </property>
           <property name="title">
            <string>校验码</string>
@@ -697,7 +741,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">border:1px solid #C0C0C0</string>
+                <string notr="true">border:1px solid #C0C0C0;font-size:13px</string>
                </property>
               </widget>
              </item>
@@ -716,7 +760,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">border:1px solid #C0C0C0</string>
+                <string notr="true">border:1px solid #C0C0C0;font-size:15px</string>
                </property>
               </widget>
              </item>
@@ -776,6 +820,9 @@ p, li { white-space: pre-wrap; }
                  <height>16777215</height>
                 </size>
                </property>
+               <property name="styleSheet">
+                <string>font-size:15px</string>
+               </property>
                <property name="text">
                 <string>3</string>
                </property>
@@ -801,7 +848,7 @@ p, li { white-space: pre-wrap; }
               </size>
              </property>
              <property name="styleSheet">
-              <string notr="true">background:#F0F0F0</string>
+              <string notr="true">background:#F0F0F0;font-size:15px</string>
              </property>
              <property name="text">
               <string>???</string>
@@ -824,8 +871,11 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="font">
            <font>
-            <pointsize>11</pointsize>
+            <pointsize>-1</pointsize>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font-size:15px</string>
           </property>
           <property name="title">
            <string>海明码</string>
@@ -861,7 +911,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">border:1px solid #C0C0C0</string>
+                <string notr="true">border:1px solid #C0C0C0;font-size:13px</string>
                </property>
               </widget>
              </item>
@@ -880,7 +930,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">border:1px solid #C0C0C0</string>
+                <string notr="true">border:1px solid #C0C0C0;font-size:13px</string>
                </property>
               </widget>
              </item>
@@ -899,7 +949,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">border:1px solid #C0C0C0</string>
+                <string notr="true">border:1px solid #C0C0C0;font-size:15px</string>
                </property>
               </widget>
              </item>
@@ -920,7 +970,7 @@ p, li { white-space: pre-wrap; }
               </size>
              </property>
              <property name="styleSheet">
-              <string notr="true">background:#F0F0F0</string>
+              <string notr="true">background:#F0F0F0;font-size:15px</string>
              </property>
              <property name="text">
               <string>???????</string>
@@ -978,6 +1028,9 @@ p, li { white-space: pre-wrap; }
                  <height>16777215</height>
                 </size>
                </property>
+               <property name="styleSheet">
+                <string notr="true">font-size:15px</string>
+               </property>
                <property name="text">
                 <string>位数：</string>
                </property>
@@ -1002,6 +1055,9 @@ p, li { white-space: pre-wrap; }
                  <width>34</width>
                  <height>16777215</height>
                 </size>
+               </property>
+               <property name="styleSheet">
+                <string>font-size:15px</string>
                </property>
                <property name="text">
                 <string>7</string>
@@ -1035,8 +1091,11 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>11</pointsize>
+         <pointsize>-1</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font-size:15px</string>
        </property>
        <property name="title">
         <string>选项</string>
@@ -1204,8 +1263,11 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>11</pointsize>
+         <pointsize>-1</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font-size:15px</string>
        </property>
        <property name="title">
         <string>说明</string>
@@ -1227,7 +1289,7 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="font">
            <font>
-            <pointsize>11</pointsize>
+            <pointsize>-1</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -1237,18 +1299,18 @@ p, li { white-space: pre-wrap; }
            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;【海明码】：海明码是一种多重奇偶检错系统，具有检错和纠错的功能，用多个奇偶校验来纠正1位错。&lt;span style=&quot; color:#000000;&quot;&gt;海明码&lt;/span&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;只能纠1位错，最多能检2位错&lt;/span&gt;。&lt;/p&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:15px; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;【海明码】：海明码是一种多重奇偶检错系统，具有检错和纠错的功能，用多个奇偶校验来纠正1位错。&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#000000;&quot;&gt;海明码&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;只能纠1位错，最多能检2位错&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;。&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;海明码中的全部传输码字是由原来的信息和附加的【奇偶校验位】组成。&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;设有&lt;span style=&quot; color:#ff0000;&quot;&gt;m位&lt;/span&gt;【信息位】，&lt;span style=&quot; color:#ff0000;&quot;&gt;r位&lt;/span&gt;【校验位】，则传输总位数为n=m+r。&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;为纠正1位错，m与r满足不等式：&lt;span style=&quot; font-weight:600; color:#ff0000;&quot;&gt;m+r+1 ≤ 2^r&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;海明码中的全部传输码字是由原来的信息和附加的【奇偶校验位】组成。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;设有&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;m位&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;【信息位】，&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;r位&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;【校验位】，则传输总位数为n=m+r。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;为纠正1位错，m与r满足不等式：&lt;/span&gt;&lt;span style=&quot; font-size:15px; font-weight:600; color:#ff0000;&quot;&gt;m+r+1 ≤ 2^r&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;海明码的【校验位】放在&lt;span style=&quot; color:#ff0000;&quot;&gt;1/2/4.../2^k&lt;/span&gt;等处，其他位为【信息位】。&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;【校验位】Pk对应海明码中的Hx(&lt;span style=&quot; color:#ff0000;&quot;&gt;x=2^(k-1)&lt;/span&gt;)，用于校验标号对应的二进制&lt;span style=&quot; color:#ff0000;&quot;&gt;第k位(本例中从右往左数)为1&lt;/span&gt;的传输位。&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;海明码的【校验位】放在&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;1/2/4.../2^k&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;等处，其他位为【信息位】。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;【校验位】Pk对应海明码中的Hx(&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;x=2^(k-1)&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;)，用于校验标号对应的二进制&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;第k位(本例中从右往左数)为1&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;的传输位。&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;本例中，使用的海明码的&lt;span style=&quot; color:#ff0000;&quot;&gt;码距为3&lt;/span&gt;。&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;若对本例中传输码字&lt;span style=&quot; color:#ff0000;&quot;&gt;各位异或得到总校验位&lt;/span&gt;，与现有的传输码字一同传输，可构成另一种海明码，其&lt;span style=&quot; color:#ff0000;&quot;&gt;码距为4&lt;/span&gt;。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;本例中，使用的海明码的&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;码距为3&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;若对本例中传输码字&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;各位异或得到总校验位&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;，与现有的传输码字一同传输，可构成另一种海明码，其&lt;/span&gt;&lt;span style=&quot; font-size:15px; color:#ff0000;&quot;&gt;码距为4&lt;/span&gt;&lt;span style=&quot; font-size:15px;&quot;&gt;。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>
@@ -1277,8 +1339,11 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>11</pointsize>
+         <pointsize>-1</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font-size:15px</string>
        </property>
        <property name="title">
         <string>输入</string>
@@ -1294,8 +1359,11 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="font">
            <font>
-            <pointsize>11</pointsize>
+            <pointsize>-1</pointsize>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font-size:15px</string>
           </property>
           <property name="title">
            <string>待校验数据</string>
@@ -1331,7 +1399,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">border:1px solid #C0C0C0</string>
+                <string notr="true">border:1px solid #C0C0C0;font-size:13px</string>
                </property>
               </widget>
              </item>
@@ -1350,7 +1418,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">border:1px solid #C0C0C0</string>
+                <string notr="true">border:1px solid #C0C0C0;font-size:13px</string>
                </property>
               </widget>
              </item>
@@ -1369,7 +1437,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">border:1px solid #C0C0C0</string>
+                <string notr="true">border:1px solid #C0C0C0;font-size:15px</string>
                </property>
               </widget>
              </item>
@@ -1390,7 +1458,7 @@ p, li { white-space: pre-wrap; }
               </size>
              </property>
              <property name="styleSheet">
-              <string notr="true">background:#F0F0F0</string>
+              <string notr="true">background:#F0F0F0;font-size:15px</string>
              </property>
              <property name="text">
               <string>0000000</string>
@@ -1448,6 +1516,9 @@ p, li { white-space: pre-wrap; }
                  <height>16777215</height>
                 </size>
                </property>
+               <property name="styleSheet">
+                <string notr="true">font-size:15px</string>
+               </property>
                <property name="text">
                 <string>位数：</string>
                </property>
@@ -1474,7 +1545,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true"/>
+                <string notr="true">font-size:15px</string>
                </property>
                <property name="text">
                 <string>7</string>
@@ -1514,8 +1585,11 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>11</pointsize>
+         <pointsize>-1</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font-size:15px</string>
        </property>
        <property name="title">
         <string>输出</string>
@@ -1531,8 +1605,11 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="font">
            <font>
-            <pointsize>11</pointsize>
+            <pointsize>-1</pointsize>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font-size:15px</string>
           </property>
           <property name="title">
            <string>纠错后数据</string>
@@ -1566,7 +1643,7 @@ p, li { white-space: pre-wrap; }
               </size>
              </property>
              <property name="styleSheet">
-              <string notr="true">background:#F0F0F0</string>
+              <string notr="true">background:#F0F0F0;font-size:15px</string>
              </property>
              <property name="text">
               <string>???????</string>
@@ -1593,7 +1670,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">border:1px solid #C0C0C0</string>
+                <string notr="true">border:1px solid #C0C0C0;font-size:13px</string>
                </property>
               </widget>
              </item>
@@ -1612,7 +1689,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">border:1px solid #C0C0C0</string>
+                <string notr="true">border:1px solid #C0C0C0;font-size:15px</string>
                </property>
               </widget>
              </item>
@@ -1647,6 +1724,9 @@ p, li { white-space: pre-wrap; }
                  <height>16777215</height>
                 </size>
                </property>
+               <property name="styleSheet">
+                <string notr="true">font-size:15px</string>
+               </property>
                <property name="text">
                 <string>位数：</string>
                </property>
@@ -1673,7 +1753,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true"/>
+                <string notr="true">font-size:15px</string>
                </property>
                <property name="text">
                 <string>7</string>
@@ -1707,8 +1787,11 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>11</pointsize>
+         <pointsize>-1</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font-size:15px</string>
        </property>
        <property name="title">
         <string>合法编码表</string>
@@ -1717,7 +1800,7 @@ p, li { white-space: pre-wrap; }
         <item>
          <widget class="QTableWidget" name="tblLegalCode">
           <property name="styleSheet">
-           <string notr="true">border:.5px solid #D8D8D8</string>
+           <string notr="true">border:.5px solid #D8D8D8;font-size:13px</string>
           </property>
          </widget>
         </item>
