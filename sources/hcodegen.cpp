@@ -278,6 +278,10 @@ void HCodeGen::InitConnections()
             CodeBlk[CODE_IN][i].setStyleSheet(okStyle);
             codeChangeFlag[i] = 0;
             CodeInStatus[i] = CODE_OK;
+            if(valStr[i] == '1')
+                CodeBlk[CODE_IN][i].setText("1");
+            else
+                CodeBlk[CODE_IN][i].setText("0");
             /*
             int status = (valStr[i] == '1');
             setBlkStatus(&(CodeBlk[CODE_IN][i]), status);
@@ -983,7 +987,7 @@ void HCodeGen::setCheckInit()
     int hamm_bits = dataBits + parityBits;
     QString valStr;
     for(int i = 0; i < hamm_bits; i++){
-        CodeBlk[CODE_IN][i].setStyleSheet(okStyle);
+        //CodeBlk[CODE_IN][i].setStyleSheet(okStyle);
         /*
         int status = (CodeBlk[CODE_IN][i].text() == "1");
         setBlkStatus(&(CodeBlk[CODE_IN][i]), status);
