@@ -3,6 +3,7 @@
 #include "ui_herr.h"
 #include "HammingBack.h"
 
+//构造函数
 HErr::HErr(SubWindow *parent) :
     SubWindow(parent),
     ui(new Ui::HErr)
@@ -14,6 +15,7 @@ HErr::HErr(SubWindow *parent) :
     InitConnections();
 }
 
+//析构函数
 HErr::~HErr()
 {
     delete ui;

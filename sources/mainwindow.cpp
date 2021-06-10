@@ -7,6 +7,13 @@
 #include <QScrollBar>
 #include <QPushButton>
 
+//编码转换
+static QString cvtStr2LocalQStr(const char *str)
+{
+    return QString::fromLocal8Bit(str);
+}
+
+//构造函数
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -18,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 }
 
+//析构函数
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -62,8 +70,8 @@ void MainWindow::InitConnections()
 //关于应用
 void MainWindow::MsgAboutApp()
 {
-    QString title = QString::fromLocal8Bit("关于应用");
-    QString info = QString::fromLocal8Bit("【海明码】编码原理与过程演示，包括以下内容：\n"
+    QString title = cvtStr2LocalQStr("关于应用");
+    QString info = cvtStr2LocalQStr("【海明码】编码原理与过程演示，包括以下内容：\n"
             "1. 码距与海明距离\n" "2. 检错位数与纠错位数\n" "3. 海明码生成过程");
     QMessageBox::information(this, title, info);
 }
@@ -111,15 +119,15 @@ void MainWindow::openSubWin(int index)
     QString tabTitle;
     if(index == SUBWIN_HDIST){       //码距
         pSubWin[index] = new HDist;
-        tabTitle = QString::fromLocal8Bit("码距");
+        tabTitle = cvtStr2LocalQStr("码距");
     }
     else if(index == SUBWIN_HERR){   //检错与纠错
         pSubWin[index] = new HErr;
-        tabTitle = QString::fromLocal8Bit("检错位数与纠错位数");
+        tabTitle = cvtStr2LocalQStr("检错位数与纠错位数");
     }
     else if(index == SUBWIN_HCGEN){  //海明码生成
         pSubWin[index] = new HCodeGen;
-        tabTitle = QString::fromLocal8Bit("海明码生成");
+        tabTitle = cvtStr2LocalQStr("海明码生成");
     }
     else
         return;

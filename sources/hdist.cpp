@@ -4,6 +4,7 @@
 #include "HammingBack.h"
 #include <QSpinBox>
 
+//构造函数
 HDist::HDist(SubWindow *parent) :
     SubWindow(parent),
     ui(new Ui::HDist)
@@ -14,6 +15,7 @@ HDist::HDist(SubWindow *parent) :
     InitConnections();
 }
 
+//析构函数
 HDist::~HDist()
 {
     delete ui;
